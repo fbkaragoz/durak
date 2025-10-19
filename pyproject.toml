@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
-authors = [{ name = "Durak Contributors" }]
+authors = [{ name = "Fatih Burak Karagöz" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -25,8 +25,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://example.com/durak"
-Repository = "https://example.com/durak/repository"
+Homepage = "https://karagoz.io"
+Repository = "https://github.com/fbkaragoz/durak"
+Issues = "https://github.com/fbkaragoz/durak/issues"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
