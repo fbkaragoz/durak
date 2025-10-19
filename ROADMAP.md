@@ -1,0 +1,48 @@
+# Durak Roadmap
+
+## 1. Immediate Tasks
+- [x] **Define package scope**: document core capabilities (tokenisation, normalization, lemmatization, stopword handling, text cleaning, frequency stats) in `docs/overview.md`.
+- [x] **Project skeleton**: scaffold `pyproject.toml`, `src/durak/__init__.py`, `README.md`, `tests/`, and tooling configs (`ruff`, `black`, `pytest`, coverage).
+- [ ] **Core cleaning utilities**: implement `src/durak/cleaning.py` with language-agnostic utilities (artifact removal, unicode normalization, casing, punctuation stripping) and Turkish-specific patterns (bkz., görsel tekrarları, sosyal medya linkleri).
+- [ ] **Stopword management**: create `src/durak/stopwords.py` housing:
+  - curated base stopword list (start from public sources, review by frequency statistics),
+  - domain extension hooks (allow caller to merge specialised lists),
+  - `StopwordManager` class enabling per-project overrides, keep-lists, and serialization.
+- [ ] **Tokenizer module**: build `src/durak/tokenizer.py` supporting configurable tokenisation strategies (simple regex, wordpiece placeholder, optional sentence splitting).
+
+## 2. Near-Term Enhancements
+- **Lemmatization architecture**:
+  - Ship thin adapters for multiple backends: Zemberek (preferred), spaCy `tr_core_news_lg`, Stanza `tr` model.
+  - Design `LemmaEngine` interface so downstream tasks can call `lemmatize(tokens)` while swapping implementations.
+  - Evaluate feasibility of rule-based fallback for environments without Java/large models.
+- **Morphological metadata**: expose POS tags, morphological features (case, person, tense) when the backend supports them; define schema in `docs/api_reference.md`.
+- **Pipeline orchestration**: introduce a `TextProcessor` class (in `pipeline.py`) chaining cleaning → tokenisation → lemmatization → stopword filtering, configurable through dataclasses or Pydantic models.
+- **Frequency & n-gram analysis**: modularise frequency counters (`stats/frequencies.py`) supporting unigram/bigram/trigram computation on raw and lemma tokens, with stopword toggles and searchable outputs.
+- **CLI utilities**: add `durak` entry point (Typer/Click) for running preprocessing pipelines, generating stopword reports, and exporting cleaned corpora.
+
+## 3. Testing & Quality
+- **Unit tests**: cover each module (cleaning, stopwords, tokenizer, lemma adapters, pipeline) using curated text fixtures reflecting Turkish morphology challenges (suffix chains, apostrophes, abbreviations).
+- **Regression suites**: maintain snapshot tests for frequency outputs and lemmatisation results to detect model/version drift; store fixtures under `tests/data/`.
+- **Continuous Integration**: GitHub Actions pipeline running lint, tests, and type-checks on Python 3.9–3.12 and multiple OS targets.
+- **Benchmark harness**: optional script to measure throughput/latency of different lemma backends to guide users on performance trade-offs.
+
+## 4. Documentation
+- **User guides**: document common workflows—preparing corpora, integrating with ML pipelines, extending stopwords, swapping lemma engines—in `docs/usage/`.
+- **API reference**: auto-generate API docs via `mkdocs` or `sphinx` to describe public classes/functions.
+- **Developer handbook**: provide contribution guidelines, coding standards, and instructions for adding new linguistic resources.
+- **Morphology insights**: dedicate a section explaining Turkish-specific considerations (vowel harmony, agglutination, apostrophe handling) and how the toolkit addresses them.
+- **Changelog**: maintain `CHANGELOG.md` following Keep a Changelog for transparent version history.
+
+## 5. Packaging & Release
+- **Semantic versioning**: start at `0.1.0`; document stability guarantees for public APIs/backends.
+- **Build tooling**: use `python -m build`; sign and upload with `twine`; supply hash-checked release workflow in GitHub Actions.
+- **Artifact checks**: include README badge, metadata (`project.urls`, classifiers for Turkish language support) in `pyproject.toml`.
+- **Community standards**: add `LICENSE` (e.g., MIT), `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, issue/PR templates.
+- **Model/resource management**: clarify licensing and download instructions for third-party lemma models (Zemberek jars, spaCy models).
+
+## 6. Future Explorations
+- **Embeddings integration**: adapters for fastText, Word2Vec, and SentenceTransformers tuned for Turkish.
+- **Advanced morphology**: explore finite-state transducer integration or neural morphological disambiguation for higher accuracy.
+- **Downstream tasks**: ship reference notebooks for sentiment classification, topic modelling, and named entity recognition using the toolkit.
+- **Dataset connectors**: helpers to ingest popular Turkish corpora (news, social media, parliamentary proceedings) with reproducible preprocessing.
+- **Web service layer**: optional FastAPI microservice exposing preprocessing and lemma endpoints for application integration.
