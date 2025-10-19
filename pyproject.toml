@@ -9,7 +9,7 @@ description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "Fatih Burak Karagöz" }]
-license = "LicenseRef-Durak-1.0"
+license = "LicenseRef-Durak-1.1"
 license-files = ["LICENSE"]
 keywords = ["turkish nlp", "text processing", "preprocessing", "lemmatization", "tokenization"]
 dependencies = []
@@ -31,12 +31,17 @@ classifiers = [
 Homepage = "https://karagoz.io"
 Repository = "https://github.com/fbkaragoz/durak"
 Issues = "https://github.com/fbkaragoz/durak/issues"
+Documentation = "https://github.com/fbkaragoz/durak#readme"
+Changelog = "https://github.com/fbkaragoz/durak/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+durak = ["py.typed"]
 
 [project.optional-dependencies]
 dev = [
@@ -63,3 +68,21 @@ testpaths = ["tests"]
 [tool.coverage.run]
 branch = true
 source = ["durak"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+skip_empty = true
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+strict_optional = true
+show_error_codes = true
+ignore_missing_imports = true
