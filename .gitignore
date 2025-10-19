@@ -7,3 +7,5 @@ __pycache__/
 # Installer caches
 .cache/
 .pytest_cache/
+dist/
+.mypy_cache/
