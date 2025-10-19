@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "durak"
+name = "durak-nlp"
 version = "0.1.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
