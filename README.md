@@ -1,4 +1,9 @@
 # Durak
+[![PyPI](https://img.shields.io/pypi/v/durak-nlp.svg)](https://pypi.org/project/durak-nlp/)
+[![Python](https://img.shields.io/pypi/pyversions/durak-nlp.svg)](https://pypi.org/project/durak-nlp/)
+[![License](https://img.shields.io/badge/license-Durak%20License%20v1.1-blue.svg)](#license)
+[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](https://pypi.org/project/durak-nlp/)
+[![Tests](https://github.com/fbkaragoz/durak/actions/workflows/tests.yml/badge.svg)](https://github.com/fbkaragoz/durak/actions/workflows/tests.yml)
 
 <p align="center">
   <img src="docs/durak.svg" alt="Durak logo" width="200" />
