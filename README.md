@@ -1,5 +1,9 @@
 # Durak
 
+<p align="center">
+  <img src="docs/durak.svg" alt="Durak logo" width="200" />
+</p>
+
 Durak is a Turkish natural language processing toolkit focused on reliable preprocessing building blocks. It offers configurable cleaning, tokenisation, stopword management, lemmatisation adapters, and frequency statistics so projects can bootstrap robust text pipelines quickly.
 
 - Personal homepage: [karagoz.io](https://karagoz.io)
