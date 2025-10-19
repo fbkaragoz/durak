@@ -3,12 +3,9 @@
 ## 1. Immediate Tasks
 - [x] **Define package scope**: document core capabilities (tokenisation, normalization, lemmatization, stopword handling, text cleaning, frequency stats) in `docs/overview.md`.
 - [x] **Project skeleton**: scaffold `pyproject.toml`, `src/durak/__init__.py`, `README.md`, `tests/`, and tooling configs (`ruff`, `black`, `pytest`, coverage).
-- [ ] **Core cleaning utilities**: implement `src/durak/cleaning.py` with language-agnostic utilities (artifact removal, unicode normalization, casing, punctuation stripping) and Turkish-specific patterns (bkz., görsel tekrarları, sosyal medya linkleri).
-- [ ] **Stopword management**: create `src/durak/stopwords.py` housing:
-  - curated base stopword list (start from public sources, review by frequency statistics),
-  - domain extension hooks (allow caller to merge specialised lists),
-  - `StopwordManager` class enabling per-project overrides, keep-lists, and serialization.
-- [ ] **Tokenizer module**: build `src/durak/tokenizer.py` supporting configurable tokenisation strategies (simple regex, wordpiece placeholder, optional sentence splitting).
+- [x] **Core cleaning utilities**: implement `src/durak/cleaning.py` with language-agnostic utilities (artifact removal, unicode normalization, casing, punctuation stripping) and Turkish-specific patterns (bkz., görsel tekrarları, sosyal medya linkleri); document design in `docs/design/cleaning.md` and add regression tests.
+- [x] **Stopword management**: add `src/durak/stopwords.py` with curated Turkish base list, file loaders, `StopwordManager`, serialization helpers, and usage guidance in `docs/design/stopwords.md` plus unit tests/fixtures.
+- [ ] **Tokenizer module (in progress)**: build `src/durak/tokenizer.py` supporting configurable tokenisation strategies (simple regex implemented, wordpiece placeholder pending, optional sentence splitting).
 
 ## 2. Near-Term Enhancements
 - **Lemmatization architecture**:
@@ -22,6 +19,7 @@
 
 ## 3. Testing & Quality
 - **Unit tests**: cover each module (cleaning, stopwords, tokenizer, lemma adapters, pipeline) using curated text fixtures reflecting Turkish morphology challenges (suffix chains, apostrophes, abbreviations).
+- **Corpus validation**: maintain `tests/data/corpus_validator.py` and shared fixtures to enforce diacritic preservation, particle boundaries, and stopword correctness on sample corpora.
 - **Regression suites**: maintain snapshot tests for frequency outputs and lemmatisation results to detect model/version drift; store fixtures under `tests/data/`.
 - **Continuous Integration**: GitHub Actions pipeline running lint, tests, and type-checks on Python 3.9–3.12 and multiple OS targets.
 - **Benchmark harness**: optional script to measure throughput/latency of different lemma backends to guide users on performance trade-offs.
