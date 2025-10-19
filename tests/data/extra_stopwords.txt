@@ -1,0 +1,4 @@
+# Additional domain-specific stopwords
+uygulama
+servis
+sunucu

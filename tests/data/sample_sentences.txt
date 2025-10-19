@@ -1,0 +1,12 @@
+# Add additional Turkish sentences here for manual cleaning/tokenization experiments.
+# Each line can contain a raw sentence; tests may load this file in future enhancements.
+alışkanlıklar kolay kolay terkedilemiyor.
+yoldayım:).
+biricik frambuazlı.\nsanki frutti extra içer gibi. midemde bi değişik şeyler var. sabaha kadar hallederler herhalde. sevgilisinden ayrılan arkadaşa artık cümle kuramaz olunca ben eve geçeyim dedim. olacak gibi değil. yavrum daha çok gençsin, geçmiş olsun sayfa kapandı diyemedim de, biliroseni, buluroseni, severoseni falan dedim.
+suudi arabistan müftüsü ve ulema heyeti başkanı abdülaziz al-i şeyh, katıldığı bir televizyon programında\nhamas\n'ı filistinlilere zarar veren bir terör örgütü olarak nitelemiş ve israil ile savaşmanın caiz olmadığını belirtmiştir. bunun yanı sıra,\nhizbullah\n'ı saf dışı bırakmak için israil ordusu ile işbirliği yapmanın da caiz olduğunu söylemiştir.\nisrail iletişim bakanı ayoub kara ise bu açıklamaları memnuniyetle karşıladıklarını attığı bir\ntweet\nile dile getirmiş, müftüyü israil'e davet etmiştir.
+5-10 yıla bizi yakalayıp geçer bunlar. biz hızla geriye giderken, bunlar kaplumbağa hızı da olsa ileri adım atıyorlar.
+benzine de yüzde 100'e yakın zam yapmışlardır. litre fiyatı 1.14'ten 2.04 riyale çıktı. fakat mazotun litresi halen 0.46 riyal.\nhttps://www.ntv.com.tr/…-zam,y8ogulrvlksxjcsms5n1da
+türkler'in medeniyet örendikleri ülke olmuştur ama tarihinin 3592834932949 bin yıllık olması ve türkler'in medeniyet öğrenmiş olmasının şu anki bok çukuru olmasıyla ilgisi yok. etiyopya'nın beş bin yıllık geçmişi var ve sömürge olmadı ama sonuç ortada. abd ise üç yüz yıllık tarihiyle dünyayı madara etti.
+bile isteğe dünyayı kendinden nefretettirmeye çalışan ülke. güçlü iken mağdur olamayacağı için, yardıma muhtaç kalamayacağı için.
+
+

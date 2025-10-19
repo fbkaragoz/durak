@@ -1,0 +1,3 @@
+# Words that should not be treated as stopwords
+ama
+servis
