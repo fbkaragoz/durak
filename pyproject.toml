@@ -58,8 +58,8 @@ target-version = ["py39"]
 [tool.ruff]
 line-length = 88
 target-version = "py39"
-select = ["E", "F", "I", "N", "C4", "UP", "B", "A"]
-ignore = ["B905"]  # allow zip without strict length checks
+lint.select = ["E", "F", "I", "N", "C4", "UP", "B", "A"]
+lint.ignore = ["B905"]  # allow zip without strict length checks
 
 [tool.pytest.ini_options]
 addopts = "-q"
