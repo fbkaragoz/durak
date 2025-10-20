@@ -18,7 +18,7 @@ def normalize_sentence(sentence: str) -> str:
 
 
 def validate_corpus(sentences: Iterable[str]) -> list[str]:
-    """Run sanity checks on iterable sentences, returning a list of error descriptions."""
+    """Run sanity checks on iterable sentences"""
     manager = StopwordManager()
     issues: list[str] = []
     for index, sentence in enumerate(sentences):
@@ -54,7 +54,7 @@ def validate_corpus(sentences: Iterable[str]) -> list[str]:
             for particle in PARTICLE_TOKENS:
                 if token.endswith(particle) and manager.is_stopword(token):
                     issues.append(
-                        f"Sentence {index}: token '{token}' misclassified as stopword despite suffix '{particle}'."
+                        f"Sentence {index}: token '{token}' -> '{particle}'."
                     )
                     break
 
