@@ -1,11 +1,11 @@
 """Stopword utilities for Durak."""
 
 from __future__ import annotations
-from dataclasses import dataclass
-import json
-from pathlib import Path
 
-from typing import Iterable, FrozenSet, MutableSet, Set
+import json
+from collections.abc import Iterable, MutableSet
+from dataclasses import dataclass
+from pathlib import Path
 
 from durak.cleaning import normalize_case
 
@@ -103,9 +103,9 @@ def _normalize(token: str, *, case_sensitive: bool) -> str:
     return token if case_sensitive else normalize_case(token, mode="lower")
 
 
-def load_stopwords(path: Path | str, *, case_sensitive: bool = False) -> Set[str]:
+def load_stopwords(path: Path | str, *, case_sensitive: bool = False) -> set[str]:
     """Load newline-delimited stopwords from a file."""
-    entries: Set[str] = set()
+    entries: set[str] = set()
     raw_text = Path(path).read_text(encoding="utf-8")
     for line in raw_text.splitlines():
         stripped = line.strip()
@@ -211,7 +211,7 @@ class StopwordManager:
         additions: Iterable[Path | str] = (),
         keep: Iterable[Path | str] = (),
         case_sensitive: bool = False,
-    ) -> "StopwordManager":
+    ) -> StopwordManager:
         manager = cls(case_sensitive=case_sensitive)
         for addition_path in additions:
             manager.load_additions(addition_path)
