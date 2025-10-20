@@ -1,14 +1,13 @@
 """Text cleaning utilities for Durak."""
 
 from __future__ import annotations
-from functools import partial
+
 import html
 import re
 import unicodedata
-
-from typing import Callable, Iterable
-
+from collections.abc import Iterable
 from functools import partial
+from typing import Callable
 
 # Common stylistic variants mapped to ASCII or Turkish canonical characters.
 UNICODE_REPLACEMENTS = {
