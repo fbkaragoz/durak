@@ -20,7 +20,9 @@ UNICODE_REPLACEMENTS = {
 }
 
 # Replace script/style blocks before stripping tags to avoid leaking JS/CSS.
-SCRIPT_STYLE_PATTERN = re.compile(r"<(script|style).*?>.*?</\1>", flags=re.IGNORECASE | re.DOTALL)
+SCRIPT_STYLE_PATTERN = re.compile(
+    r"<(script|style).*?>.*?</\1>", flags=re.IGNORECASE | re.DOTALL
+)
 TAG_PATTERN = re.compile(r"<[^>]+>")
 URL_PATTERN = re.compile(r"(?P<url>(https?://|www\.)[^\s]+)", flags=re.IGNORECASE)
 MENTION_PATTERN = re.compile(r"(?<!\w)@[^\s#@]+", flags=re.UNICODE)
@@ -81,7 +83,9 @@ def normalize_case(text: str, mode: str = "lower") -> str:
         )
         return adjusted.upper()
 
-    raise ValueError(f"Unsupported mode '{mode}'. Expected 'lower', 'upper', or 'none'.")
+    raise ValueError(
+        f"Unsupported mode '{mode}'. Expected 'lower', 'upper', or 'none'."
+    )
 
 
 def _strip_trailing_punctuation(match: re.Match[str]) -> str:
@@ -143,7 +147,9 @@ DEFAULT_CLEANING_STEPS: Tuple[Callable[[str], str], ...] = (
 )
 
 
-def clean_text(text: str, *, steps: Iterable[Callable[[str], str]] | None = None) -> str:
+def clean_text(
+    text: str, *, steps: Iterable[Callable[[str], str]] | None = None
+) -> str:
     """Apply the configured cleaning steps sequentially."""
     if text is None:
         return ""
