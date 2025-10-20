@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 
-from collections.abc import Callable, Iterable, Sequence
-
+# Local imports
 from durak.cleaning import normalize_case
 
 # Regex patterns tuned for Turkish tokenisation.
