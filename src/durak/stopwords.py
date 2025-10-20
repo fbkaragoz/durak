@@ -156,7 +156,7 @@ class StopwordManager:
     def snapshot(self) -> StopwordSnapshot:
         return StopwordSnapshot(self.stopwords, self.keep_words, self.case_sensitive)
 
-    def is_stopword(self, token: str) -> bool:
+    def is_stopword(self, token: str | None) -> bool:
         if token is None:
             return False
         normalized = _normalize(token, case_sensitive=self.case_sensitive)
