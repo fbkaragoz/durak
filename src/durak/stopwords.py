@@ -185,17 +185,17 @@ class StopwordManager:
     def load_additions(self, path: Path | str) -> None:
         self.add(load_stopwords(path, case_sensitive=self.case_sensitive))
 
-    def export(self, path: Path | str, *, format: str = "txt") -> None:
+    def export(self, path: Path | str, *, fmt: str = "txt") -> None:
         dest = Path(path)
         words = sorted(self.stopwords)
-        if format == "txt":
+        if fmt == "txt":
             dest.write_text("\n".join(words) + "\n", encoding="utf-8")
-        elif format == "json":
+        elif fmt == "json":
             dest.write_text(
                 json.dumps(words, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
             )
         else:
-            raise ValueError("Unsupported format; use 'txt' or 'json'.")
+            raise ValueError("Unsupported fmt; use 'txt' or 'json'.")
 
     def to_dict(self) -> dict[str, object]:
         return {
