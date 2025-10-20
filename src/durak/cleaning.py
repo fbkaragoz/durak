@@ -149,7 +149,7 @@ DEFAULT_CLEANING_STEPS: tuple[Callable[[str], str], ...] = (
 
 
 def clean_text(
-    text: str, *, steps: Iterable[Callable[[str], str]] | None = None
+    text: str | None, *, steps: Iterable[Callable[[str], str]] | None = None
 ) -> str:
     """Apply the configured cleaning steps sequentially."""
     if text is None:
