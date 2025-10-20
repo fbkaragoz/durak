@@ -35,7 +35,7 @@ TRAILING_PUNCTUATION = {".", ",", "!", "?", ";", ":"}
 
 
 def normalize_unicode(text: str) -> str:
-    """Apply NFC normalization and map known stylistic variants to standard characters."""
+    """Apply NFC normalization and map variants to standard characters."""
     if not text:
         return ""
     normalized = unicodedata.normalize("NFC", text)
