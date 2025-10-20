@@ -1,10 +1,11 @@
 """Tokenizer utilities for Durak."""
 
 from __future__ import annotations
+
 import re
 from dataclasses import dataclass
 
-from typing import Callable, Dict, Iterable, List, Sequence
+from typing import Callable, Iterable, Sequence
 
 from durak.cleaning import normalize_case
 
@@ -38,11 +39,11 @@ class TokenizationError(RuntimeError):
     """Raised when tokenization strategies encounter unexpected errors."""
 
 
-Tokenizer = Callable[[str], List[str]]
-SentenceSplitter = Callable[[str], List[str]]
+Tokenizer = Callable[[str], list[str]]
+SentenceSplitter = Callable[[str], list[str]]
 
-TOKENIZER_REGISTRY: Dict[str, Tokenizer] = {}
-SENTENCE_SPLITTER_REGISTRY: Dict[str, SentenceSplitter] = {}
+TOKENIZER_REGISTRY: dict[str, Tokenizer] = {}
+SENTENCE_SPLITTER_REGISTRY: dict[str, SentenceSplitter] = {}
 
 
 def register_tokenizer(name: str, func: Tokenizer) -> None:
@@ -53,17 +54,17 @@ def register_sentence_splitter(name: str, func: SentenceSplitter) -> None:
     SENTENCE_SPLITTER_REGISTRY[name] = func
 
 
-def regex_tokenize(text: str) -> List[str]:
+def regex_tokenize(text: str) -> list[str]:
     if text is None:
         return []
     matches = REGEX_TOKEN_PATTERN.findall(text)
     return [match for match in matches if match.strip()]
 
 
-def regex_sentence_split(text: str) -> List[str]:
+def regex_sentence_split(text: str) -> list[str]:
     if text is None:
         return []
-    sentences: List[str] = []
+    sentences: list[str] = []
     start = 0
     for match in SENTENCE_END_PATTERN.finditer(text):
         end = match.end()
@@ -87,14 +88,14 @@ register_tokenizer("regex", regex_tokenize)
 register_sentence_splitter("regex", regex_sentence_split)
 
 
-def tokenize_text(text: str, strategy: str = "regex") -> List[str]:
+def tokenize_text(text: str, strategy: str = "regex") -> list[str]:
     tokenize = TOKENIZER_REGISTRY.get(strategy)
     if tokenize is None:
         raise TokenizationError(f"Unknown tokenizer strategy '{strategy}'.")
     return tokenize(text)
 
 
-def split_sentences(text: str, strategy: str = "regex") -> List[str]:
+def split_sentences(text: str, strategy: str = "regex") -> list[str]:
     splitter = SENTENCE_SPLITTER_REGISTRY.get(strategy)
     if splitter is None:
         raise TokenizationError(f"Unknown sentence splitter strategy '{strategy}'.")
@@ -106,8 +107,8 @@ def normalize_tokens(
     *,
     lower: bool = True,
     strip_punct: bool = False,
-) -> List[str]:
-    normalized: List[str] = []
+) -> list[str]:
+    normalized: list[str] = []
     for token in tokens:
         if strip_punct and re.fullmatch(PUNCT_TOKEN, token):
             continue
