@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import Iterable, List
+from collections.abc import Iterable
 
 from durak.cleaning import clean_text
 from durak.stopwords import StopwordManager
@@ -17,10 +17,10 @@ def normalize_sentence(sentence: str) -> str:
     return " ".join(sentence.strip().split())
 
 
-def validate_corpus(sentences: Iterable[str]) -> List[str]:
+def validate_corpus(sentences: Iterable[str]) -> list[str]:
     """Run sanity checks on iterable sentences, returning a list of error descriptions."""
     manager = StopwordManager()
-    issues: List[str] = []
+    issues: list[str] = []
     for index, sentence in enumerate(sentences):
         if not sentence or sentence.lstrip().startswith("#"):
             continue
@@ -35,11 +35,18 @@ def validate_corpus(sentences: Iterable[str]) -> List[str]:
 
         for diacritic in TURKISH_DIACRITICS:
             if diacritic in lowered_original and diacritic not in cleaned:
-                issues.append(f"Sentence {index}: diacritic '{diacritic}' lost after cleaning.")
+                issues.append(
+                    f"Sentence {index}: diacritic '{diacritic}' lost after cleaning."
+                )
 
         for particle in PARTICLE_TOKENS:
-            if re.search(rf"\b{particle}\b", lowered_original) and particle not in stripped_tokens:
-                issues.append(f"Sentence {index}: particle '{particle}' missing post-cleaning.")
+            if (
+                re.search(rf"\b{particle}\b", lowered_original)
+                and particle not in stripped_tokens
+            ):
+                issues.append(
+                    f"Sentence {index}: particle '{particle}' missing post-cleaning."
+                )
 
         for token in stripped_tokens:
             if token in PARTICLE_TOKENS:
