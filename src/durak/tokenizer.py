@@ -54,14 +54,27 @@ def register_sentence_splitter(name: str, func: SentenceSplitter) -> None:
     SENTENCE_SPLITTER_REGISTRY[name] = func
 
 
-def regex_tokenize(text: str) -> list[str]:
+def regex_tokenize(text: str | None) -> list[str]:
+    """Tokenize text using regex patterns.
+    
+    Args:
+        text: Input text to tokenize, can be None.
+    Returns:
+        List of tokens.
+    """
     if text is None:
         return []
     matches = REGEX_TOKEN_PATTERN.findall(text)
     return [match for match in matches if match.strip()]
 
 
-def regex_sentence_split(text: str) -> list[str]:
+def regex_sentence_split(text: str | None) -> list[str]:
+    """Split text into sentences using regex patterns.
+    Args:
+        text: Input text to split, can be None
+    Returns:
+        List of sentences
+    """
     if text is None:
         return []
     sentences: list[str] = []
