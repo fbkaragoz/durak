@@ -1,10 +1,10 @@
 """Stopword utilities for Durak."""
 
 from __future__ import annotations
-
 from dataclasses import dataclass
 import json
 from pathlib import Path
+
 from typing import Iterable, FrozenSet, MutableSet, Set
 
 from durak.cleaning import normalize_case

@@ -1,9 +1,9 @@
 """Tokenizer utilities for Durak."""
 
 from __future__ import annotations
-
 import re
 from dataclasses import dataclass
+
 from typing import Callable, Dict, Iterable, List, Sequence
 
 from durak.cleaning import normalize_case
