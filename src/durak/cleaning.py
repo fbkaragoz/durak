@@ -6,7 +6,7 @@ import html
 import re
 import unicodedata
 
-from typing import Callable, Iterable, Tuple
+from typing import Callable, Iterable
 
 from functools import partial
 
@@ -109,7 +109,7 @@ def remove_urls(text: str) -> str:
 
 
 def remove_mentions_hashtags(text: str, *, keep_hash: bool = False) -> str:
-    """Remove @mentions and hashtags, optionally retaining hashtag keywords without the hash."""
+    """Remove @mentions and hashtags"""
     if not text:
         return ""
     without_mentions = MENTION_PATTERN.sub(" ", text)
@@ -138,7 +138,7 @@ def remove_repeated_chars(text: str, *, max_repeats: int = 2) -> str:
     return pattern.sub(replacer, text)
 
 
-DEFAULT_CLEANING_STEPS: Tuple[Callable[[str], str], ...] = (
+DEFAULT_CLEANING_STEPS: tuple[Callable[[str], str], ...] = (
     normalize_unicode,
     strip_html,
     remove_urls,
