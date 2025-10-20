@@ -9,7 +9,7 @@ from typing import Iterable, FrozenSet, MutableSet, Set
 
 from durak.cleaning import normalize_case
 
-BASE_STOPWORDS: FrozenSet[str] = frozenset(
+BASE_STOPWORDS: frozenset[str] = frozenset(
     {
         "acaba",
         "ama",
@@ -117,8 +117,8 @@ def load_stopwords(path: Path | str, *, case_sensitive: bool = False) -> Set[str
 
 @dataclass(frozen=True)
 class StopwordSnapshot:
-    stopwords: FrozenSet[str]
-    keep_words: FrozenSet[str]
+    stopwords: frozenset[str]
+    keep_words: frozenset[str]
     case_sensitive: bool
 
 
@@ -146,11 +146,11 @@ class StopwordManager:
             self.add_keep_words(keep)
 
     @property
-    def stopwords(self) -> FrozenSet[str]:
+    def stopwords(self) -> frozenset[str]:
         return frozenset(self._stopwords)
 
     @property
-    def keep_words(self) -> FrozenSet[str]:
+    def keep_words(self) -> frozenset[str]:
         return frozenset(self._keep_words)
 
     def snapshot(self) -> StopwordSnapshot:
