@@ -135,7 +135,9 @@ class StopwordManager:
     ) -> None:
         self.case_sensitive = case_sensitive
         base_words = set(base) if base is not None else set(BASE_STOPWORDS)
-        normalized_base = {_normalize(word, case_sensitive=case_sensitive) for word in base_words}
+        normalized_base = {
+            _normalize(word, case_sensitive=case_sensitive) for word in base_words
+        }
         self._stopwords: MutableSet[str] = set(normalized_base)
         self._keep_words: MutableSet[str] = set()
         if additions:
@@ -189,7 +191,9 @@ class StopwordManager:
         if format == "txt":
             dest.write_text("\n".join(words) + "\n", encoding="utf-8")
         elif format == "json":
-            dest.write_text(json.dumps(words, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            dest.write_text(
+                json.dumps(words, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+            )
         else:
             raise ValueError("Unsupported format; use 'txt' or 'json'.")
 
