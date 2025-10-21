@@ -1,0 +1,12 @@
+# Social media specific Turkish stopwords and abbreviations
+dm
+fav
+favla
+hashtag
+like
+mention
+pls
+rt
+takip
+takipleş
+trend
