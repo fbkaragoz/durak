@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "sets": {
+    "tr/base": {
+      "file": "base/turkish.txt",
+      "language": "tr",
+      "description": "Core Turkish stopwords curated for Durak."
+    },
+    "tr/domains/social_media": {
+      "file": "domains/social_media.txt",
+      "language": "tr",
+      "description": "Social media tokens and conversational abbreviations.",
+      "extends": [
+        "tr/base"
+      ]
+    }
+  }
+}

@@ -13,3 +13,6 @@ dist/
 # reports
 htmlcov/
 .coverage
+
+# local folders
+.etc/
