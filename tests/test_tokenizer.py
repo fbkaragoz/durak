@@ -10,11 +10,19 @@ from tests.data.corpus_validator import validate_corpus
     ("text", "expected_tokens"),
     [
         ("Türkiye'ye gidiyorum.", ["Türkiye'ye", "gidiyorum", "."]),
-        ("5-10 yıla bizi yakalayıp geçer.", ["5-10", "yıla", "bizi", "yakalayıp", "geçer", "."]),
-        ("URL: https://karagoz.io/test?a=1", ["URL", ":", "https://karagoz.io/test?a=1"]),
+        (
+            "5-10 yıla bizi yakalayıp geçer.",
+            ["5-10", "yıla", "bizi", "yakalayıp", "geçer", "."],
+        ),
+        (
+            "URL: https://karagoz.io/test?a=1",
+            ["URL", ":", "https://karagoz.io/test?a=1"],
+        ),
     ],
 )
-def test_regex_tokenize_preserves_turkish_features(text: str, expected_tokens: list[str]) -> None:
+def test_regex_tokenize_preserves_turkish_features(
+    text: str, expected_tokens: list[str]
+) -> None:
     tokens = tokenize_text(text)
     assert tokens == expected_tokens
 

@@ -26,7 +26,9 @@ def test_collapse_whitespace_trim_and_punctuation_spacing() -> None:
         ("none", "İstanbul", "İstanbul"),
     ],
 )
-def test_normalize_case_supports_turkish_i_variants(mode: str, input_text: str, expected: str) -> None:
+def test_normalize_case_supports_turkish_i_variants(
+    mode: str, input_text: str, expected: str
+) -> None:
     assert cleaning.normalize_case(input_text, mode=mode) == expected
 
 
