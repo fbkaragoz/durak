@@ -6,7 +6,6 @@ import re
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 
-# Local imports
 from durak.cleaning import normalize_case
 
 # Regex patterns tuned for Turkish tokenisation.
