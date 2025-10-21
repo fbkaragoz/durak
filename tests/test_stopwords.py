@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from durak.stopwords import BASE_STOPWORDS, StopwordManager, StopwordSnapshot, load_stopwords
+from durak.stopwords import (
+    BASE_STOPWORDS,
+    StopwordManager,
+    StopwordSnapshot,
+    load_stopwords,
+)
 
 
 def test_base_stopwords_contains_common_tokens() -> None:
@@ -24,7 +29,9 @@ def test_stopword_manager_respects_keep_words() -> None:
     assert not manager.is_stopword("Ama")
 
 
-def test_stopword_manager_additions_and_file_loading(tmp_path: Path, data_dir: Path) -> None:
+def test_stopword_manager_additions_and_file_loading(
+    tmp_path: Path, data_dir: Path
+) -> None:
     manager = StopwordManager(additions=["api"])
     assert manager.is_stopword("api")
 
@@ -49,7 +56,7 @@ def test_export_and_snapshot_roundtrip(tmp_path: Path, data_dir: Path) -> None:
     txt_path = tmp_path / "stopwords.txt"
     json_path = tmp_path / "stopwords.json"
     manager.export(txt_path)
-    manager.export(json_path, format="json")
+    manager.export(json_path, fmt="json")
 
     txt_contents = txt_path.read_text(encoding="utf-8").strip().splitlines()
     json_contents = json.loads(json_path.read_text(encoding="utf-8"))
