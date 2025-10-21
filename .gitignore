@@ -9,3 +9,7 @@ __pycache__/
 .pytest_cache/
 dist/
 .mypy_cache/
+
+# reports
+htmlcov/
+.coverage
