@@ -1,18 +1,8 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it using the metadata from this file."
-type: software
-title: "Durak: Turkish NLP Toolkit"
-version: 0.2.2
-date-released: 2025-10-29
+message: "If you use this software, please cite it as below."
 authors:
   - family-names: Karagöz
     given-names: Fatih Burak
-abstract: "Durak provides modular text preprocessing utilities tailored for Turkish NLP workflows, including cleaning, tokenization, and stopword management."
-keywords:
-  - Turkish NLP
-  - text processing
-  - tokenization
-  - stopwords
-license: Other
-repository-code: "https://github.com/fbkaragoz/durak"
-url: "https://github.com/fbkaragoz/durak"
+title: "Durak: Turkish NLP Toolkit"
+version: "0.2.2"
+date-released: "2025-10-29"
