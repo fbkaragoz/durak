@@ -6,11 +6,13 @@ All notable changes to Durak will be documented here. This project adheres to [S
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
 
-## [0.2.1] - 2025-10-29
+## [0.2.2] - 2025-10-29
 
 ### Fixed
-- Corrected CITATION.cff format for Zenodo DOI generation
-- Removed duplicate identifiers and invalid DOI placeholder
+- Fixed CITATION.cff format for Zenodo DOI generation
+- Added required `type: software` field
+- Changed license format to "Other" for custom licenses
+- Added keywords for better discoverability
 - Standardized citation metadata structure
 
 ## [0.2.0] - 2025-10-29
