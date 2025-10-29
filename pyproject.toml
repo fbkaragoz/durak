@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "durak-nlp"
-version = "0.1.1"
+version = "0.2.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "Fatih Burak Karagöz" }]
-license = "LicenseRef-Durak-1.1"
+license = "LicenseRef-Durak-1.2"
 license-files = ["LICENSE"]
 keywords = ["turkish nlp", "text processing", "preprocessing", "lemmatization", "tokenization"]
 dependencies = []
@@ -86,3 +86,5 @@ warn_unreachable = true
 strict_optional = true
 show_error_codes = true
 ignore_missing_imports = true
+# SPDX-FileCopyrightText: © 2025 Fatih Burak Karagöz
+# SPDX-License-Identifier: LicenseRef-Durak-NonCommercial-1.2
