@@ -11,7 +11,7 @@ from typing import Any, cast
 
 from durak.cleaning import normalize_case
 
-STOPWORD_DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "stopwords"
+STOPWORD_DATA_DIR = Path(__file__).resolve().parent / "data" / "stopwords"
 DEFAULT_STOPWORD_RESOURCE = "tr/base"
 STOPWORD_METADATA_PATH = STOPWORD_DATA_DIR / "metadata.json"
 
