@@ -5,14 +5,14 @@ message: "If you use Durak in academic work, please cite it using the informatio
 authors:
   - family-names: Karagöz
     given-names: Fatih Burak
-    affiliation: "karagoz.io"
+    affiliation: "Independent Researcher"
 identifiers:
   - type: url
     value: "https://github.com/fbkaragoz/durak"
-version: 0.1.0
-date-released: 2025-10-19
+version: 0.2.0
+date-released: 2025-10-29
 repository-code: "https://github.com/fbkaragoz/durak"
-license: "LicenseRef-Durak-1.1"
+license: "LicenseRef-Durak-NonCommercial-1.2"
 preferred-citation:
   type: software
   title: "Durak NLP Toolkit"
@@ -20,4 +20,9 @@ preferred-citation:
     - family-names: Karagöz
       given-names: Fatih Burak
   url: "https://github.com/fbkaragoz/durak"
-  version: 0.1.0
+  version: "v0.2.0"
+  date-released: 2025-10-29
+identifiers:
+  - type: doi
+    value: "https://github.com/fbkaragoz/durak"
+# - value: ""

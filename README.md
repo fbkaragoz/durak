@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/durak-nlp.svg)](https://pypi.org/project/durak-nlp/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/durak-nlp.svg)](https://pypi.org/project/durak-nlp/)
 [![Tests](https://github.com/fbkaragoz/durak/actions/workflows/tests.yml/badge.svg)](https://github.com/fbkaragoz/durak/actions/workflows/tests.yml)
-[![License](https://img.shields.io/badge/license-Durak%201.1-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Durak%201.2-blue.svg)](LICENSE)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fbkaragoz/durak/main/docs/durak.svg" alt="Durak logo" width="200" />
@@ -26,18 +26,28 @@ pip install durak-nlp
 Clean and tokenize Turkish text in seconds:
 
 ```python
-from durak import clean_text, tokenize
+from durak import clean_text, process_text, tokenize, remove_stopwords
 
-text = "Türkiye'de NLP zor mu? Durak kolaylaştırır."
+text = "Bu bir test. Durak kolaylaştırır."
 tokens = tokenize(clean_text(text))
 print(tokens)
-# ['türkiye'de', 'nlp', 'zor', 'mu', '?', 'durak', 'kolaylaştırır', '.']
+# ['bu', 'bir', 'test', '.', 'durak', 'kolaylaştırır', '.']
+
+filtered = remove_stopwords(tokens)
+print(filtered)
+# ['test', '.', 'durak', 'kolaylaştırır', '.']
+
+processed = process_text(text, remove_stopwords=True)
+print(processed)
+# ['test', '.', 'durak', 'kolaylaştırır', '.']
 ```
+
+Need a quick lookup? `is_stopword("ve")` returns `True`, while `list_stopwords()[:5]` reveals the first few entries of the curated base set.
 
 ## Features
 
 - Unicode-aware cleaning utilities tuned for Turkish content (social, news, informal text).
-- Configurable stopword management with keep-lists, custom additions, and serialization.
+- Configurable stopword management with keep-lists, custom additions, `is_stopword`, and `list_stopwords` helpers.
 - Regex-based tokenizer and sentence splitter with clitic and diacritic preservation.
 - Lightweight corpus validator to guard Turkish-specific artefacts.
 - Ready for extension with future lemmatization and subword adapters.
@@ -66,8 +76,8 @@ Refer to [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow, coding standa
 - Code of Conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - Security policy: [SECURITY.md](SECURITY.md)
 - Citation guidance: [CITATION.cff](CITATION.cff)
-- Topics: `turkish-nlp`, `nlp`, `tokenization`, `lemmatization`, `text-processing`, `python`
+- Topics: `turkish-nlp`, `nlp`, `tokenization`, `lemmatization`, `text-processing`, `pre-processing`, `python`
 
 ## License
 
-Durak is distributed under the [Durak License v1.1](LICENSE). Commercial or institutional use requires explicit written permission from the author.
+Durak is distributed under the [Durak License v1.2](LICENSE). Commercial or institutional use requires explicit written permission from the author.
