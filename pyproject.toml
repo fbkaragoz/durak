@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "durak-nlp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -41,7 +41,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-durak = ["py.typed"]
+durak = ["py.typed", "data/stopwords/**/*.txt", "data/stopwords/**/*.json"]
 
 [project.optional-dependencies]
 dev = [
