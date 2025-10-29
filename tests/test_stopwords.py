@@ -3,16 +3,25 @@ from pathlib import Path
 
 import pytest
 
-from durak.stopwords import (
+from durak import (
     BASE_STOPWORDS,
+    DEFAULT_STOPWORD_RESOURCE,
     StopwordManager,
     StopwordSnapshot,
+    load_stopword_resource,
+    load_stopword_resources,
     load_stopwords,
+    remove_stopwords,
 )
 
 
 def test_base_stopwords_contains_common_tokens() -> None:
     assert {"ve", "ama", "çünkü"} <= BASE_STOPWORDS
+
+
+def test_base_stopwords_matches_resource_definition() -> None:
+    resource_words = load_stopword_resource(DEFAULT_STOPWORD_RESOURCE)
+    assert BASE_STOPWORDS == frozenset(resource_words)
 
 
 def test_load_stopwords_normalizes_entries(tmp_path: Path) -> None:
@@ -46,6 +55,12 @@ def test_case_sensitive_mode_differentiates_tokens() -> None:
     assert not manager.is_stopword("durak")
 
 
+def test_load_stopword_resource_handles_extends() -> None:
+    social_media = load_stopword_resource("tr/domains/social_media")
+    assert {"rt", "dm", "ve"} <= social_media
+    assert BASE_STOPWORDS <= frozenset(social_media)
+
+
 def test_export_and_snapshot_roundtrip(tmp_path: Path, data_dir: Path) -> None:
     manager = StopwordManager(additions=["veri"], keep=["ama"])
     manager.load_additions(data_dir / "extra_stopwords.txt")
@@ -62,6 +77,18 @@ def test_export_and_snapshot_roundtrip(tmp_path: Path, data_dir: Path) -> None:
     json_contents = json.loads(json_path.read_text(encoding="utf-8"))
     assert sorted(txt_contents) == sorted(json_contents)
     assert "ama" not in json_contents  # keep words should be excluded
+
+
+def test_stopword_manager_from_resources_includes_domains() -> None:
+    manager = StopwordManager.from_resources(["tr/domains/social_media"])
+    assert manager.is_stopword("rt")
+    assert manager.is_stopword("ve")
+
+
+def test_remove_stopwords_filters_tokens() -> None:
+    tokens = ["ve", "Durak", "ama"]
+    filtered = remove_stopwords(tokens)
+    assert filtered == ["Durak"]
 
 
 @pytest.fixture
