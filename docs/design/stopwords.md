@@ -13,6 +13,7 @@ Key APIs:
 - `BASE_STOPWORDS`: frozen set populated from the metadata-backed base resource.
 - `load_stopword_resource(name, *, metadata_path=None, case_sensitive=False) -> set[str]`: resolve a named resource (with `extends` support) under `data/stopwords/`.
 - `load_stopwords(path: Path | str) -> set[str]`: read stopwords from newline-delimited files (UTF-8) with optional case normalisation.
+- `remove_stopwords(tokens, *, manager=None, base=None, additions=None, keep=None, case_sensitive=None) -> list[str]`: convenience helper that filters iterable tokens, optionally reusing a `StopwordManager`.
 - `StopwordManager`:
   - Initialization parameters: `base`, `additions`, `keep`, `case_sensitive`.
   - Constructors: `from_files(...)`, `from_resources(names, *, metadata_path=None, ...)`.
