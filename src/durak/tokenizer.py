@@ -53,16 +53,8 @@ def register_sentence_splitter(name: str, func: SentenceSplitter) -> None:
     SENTENCE_SPLITTER_REGISTRY[name] = func
 
 
-def regex_tokenize(text: str | None) -> list[str]:
-    """Tokenize text using regex patterns.
-    
-    Args:
-        text: Input text to tokenize, can be None.
-    Returns:
-        List of tokens.
-    """
-    if text is None:
-        return []
+def regex_tokenize(text: str) -> list[str]:
+    """Tokenize text using regex patterns."""
     matches = REGEX_TOKEN_PATTERN.findall(text)
     return [match for match in matches if match.strip()]
 
@@ -100,11 +92,42 @@ register_tokenizer("regex", regex_tokenize)
 register_sentence_splitter("regex", regex_sentence_split)
 
 
-def tokenize_text(text: str, strategy: str = "regex") -> list[str]:
-    tokenize = TOKENIZER_REGISTRY.get(strategy)
-    if tokenize is None:
+def tokenize(
+    text: str | None,
+    *,
+    strategy: str = "regex",
+    strip_punct: bool = False,
+) -> list[str]:
+    """Tokenize text with optional punctuation stripping.
+
+    Examples:
+        >>> tokenize("Durak, kolay mı?", strip_punct=True)
+        ['Durak', 'kolay', 'mı']
+    """
+    if text is None:
+        return []
+    tokenizer = TOKENIZER_REGISTRY.get(strategy)
+    if tokenizer is None:
         raise TokenizationError(f"Unknown tokenizer strategy '{strategy}'.")
-    return tokenize(text)
+    tokens = tokenizer(text)
+    if strip_punct:
+        tokens = [token for token in tokens if not re.fullmatch(PUNCT_TOKEN, token)]
+    return tokens
+
+
+def tokenize_text(
+    text: str | None,
+    strategy: str = "regex",
+    *,
+    strip_punct: bool = False,
+) -> list[str]:
+    """Backward-compatible wrapper around :func:`tokenize`.
+
+    Examples:
+        >>> tokenize_text("Durak, kolay mı?", strip_punct=True)
+        ['Durak', 'kolay', 'mı']
+    """
+    return tokenize(text, strategy=strategy, strip_punct=strip_punct)
 
 
 def split_sentences(text: str, strategy: str = "regex") -> list[str]:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Iterable, MutableSet, Sequence
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from typing import Any, cast
 
@@ -25,6 +25,8 @@ __all__ = [
     "load_stopword_resource",
     "load_stopword_resources",
     "load_stopwords",
+    "is_stopword",
+    "list_stopwords",
     "remove_stopwords",
 ]
 
@@ -39,7 +41,7 @@ def _resolve_metadata_path(metadata_path: Path | str | None) -> Path:
     return Path(metadata_path)
 
 
-@lru_cache(maxsize=None)
+@cache
 def _read_stopword_metadata(resolved_metadata_path: str) -> dict[str, Any]:
     metadata_path = Path(resolved_metadata_path)
     try:
@@ -109,11 +111,15 @@ def _collect_resource_words(
         return cache[resource_name]
     if resource_name in stack:
         cycle = " -> ".join((*stack, resource_name))
-        raise StopwordMetadataError(f"Circular stopword resource extends chain: {cycle}")
+        raise StopwordMetadataError(
+            f"Circular stopword resource extends chain: {cycle}"
+        )
     try:
         entry: dict[str, Any] = sets[resource_name]
     except KeyError as exc:
-        raise StopwordMetadataError(f"Unknown stopword resource '{resource_name}'.") from exc
+        raise StopwordMetadataError(
+            f"Unknown stopword resource '{resource_name}'."
+        ) from exc
 
     alias_target = entry.get("alias")
     if alias_target is not None and not isinstance(alias_target, str):
@@ -130,7 +136,8 @@ def _collect_resource_words(
             if invalid_fields:
                 fields = ", ".join(sorted(invalid_fields))
                 raise StopwordMetadataError(
-                    f"Stopword alias '{resource_name}' cannot define additional fields: {fields}."
+                    "Stopword alias "
+                    f"'{resource_name}' cannot define additional fields: {fields}."
                 )
             aliased_words = _collect_resource_words(
                 alias_target,
@@ -165,7 +172,7 @@ def _collect_resource_words(
     return frozen
 
 
-@lru_cache(maxsize=None)
+@cache
 def _load_stopword_resource_cached(
     resolved_metadata_path: str, resource_name: str, case_sensitive: bool
 ) -> frozenset[str]:
@@ -251,11 +258,18 @@ def remove_stopwords(
     keep: Iterable[str] | None = None,
     case_sensitive: bool | None = None,
 ) -> list[str]:
-    """Return tokens that are not stopwords."""
+    """Return tokens that are not stopwords.
+
+    Examples:
+        >>> remove_stopwords(["bu", "bir", "test"])
+        ['test']
+    """
     if tokens is None:
         return []
     if manager is None:
-        resolved_case_sensitive = case_sensitive if case_sensitive is not None else False
+        resolved_case_sensitive = (
+            case_sensitive if case_sensitive is not None else False
+        )
         resolved_base = base if base is not None else BASE_STOPWORDS
         manager = StopwordManager(
             base=resolved_base,
@@ -270,7 +284,8 @@ def remove_stopwords(
             )
         if base is not None or additions is not None or keep is not None:
             raise ValueError(
-                "Cannot provide base/additions/keep when a manager instance is supplied."
+                "Cannot provide base/additions/keep when a manager instance is "
+                "supplied."
             )
 
     filtered: list[str] = []
@@ -278,6 +293,86 @@ def remove_stopwords(
         if not manager.is_stopword(token):
             filtered.append(token)
     return filtered
+
+
+def _resolve_stopword_set(
+    resource: str | Iterable[str] | None,
+    *,
+    metadata_path: Path | str | None,
+    case_sensitive: bool,
+) -> frozenset[str]:
+    if resource is None:
+        if case_sensitive:
+            words = load_stopword_resource(
+                DEFAULT_STOPWORD_RESOURCE,
+                metadata_path=metadata_path,
+                case_sensitive=case_sensitive,
+            )
+            return frozenset(words)
+        return BASE_STOPWORDS
+
+    if isinstance(resource, str):
+        words = load_stopword_resource(
+            resource,
+            metadata_path=metadata_path,
+            case_sensitive=case_sensitive,
+        )
+    else:
+        words = load_stopword_resources(
+            resource,
+            metadata_path=metadata_path,
+            case_sensitive=case_sensitive,
+        )
+    return frozenset(words)
+
+
+def is_stopword(
+    token: str | None,
+    *,
+    resource: str | Iterable[str] | None = None,
+    metadata_path: Path | str | None = None,
+    case_sensitive: bool = False,
+) -> bool:
+    """Return True if the token is present in the selected stopword set.
+
+    Examples:
+        >>> is_stopword("ve")
+        True
+        >>> is_stopword("durak")
+        False
+    """
+    if token is None:
+        return False
+    normalized = _normalize(token, case_sensitive=case_sensitive)
+    if not normalized:
+        return False
+    words = _resolve_stopword_set(
+        resource,
+        metadata_path=metadata_path,
+        case_sensitive=case_sensitive,
+    )
+    return normalized in words
+
+
+def list_stopwords(
+    *,
+    resource: str | Iterable[str] | None = None,
+    metadata_path: Path | str | None = None,
+    case_sensitive: bool = False,
+    sort: bool = True,
+) -> list[str]:
+    """Return the stopword list for the selected resource(s).
+
+    Examples:
+        >>> list_stopwords()[:3]
+        ['acaba', 'ama', 'aslında']
+    """
+    words = _resolve_stopword_set(
+        resource,
+        metadata_path=metadata_path,
+        case_sensitive=case_sensitive,
+    )
+    return sorted(words) if sort else list(words)
 
 
 @dataclass(frozen=True)
