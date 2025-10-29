@@ -6,7 +6,7 @@ All notable changes to Durak will be documented here. This project adheres to [S
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
 
-## [0.2.0] - 2025-10-26
+## [0.2.0] - 2025-10-29
 
 - Promoted stopword utilities to the top-level API, including `remove_stopwords`,
   new `is_stopword` and `list_stopwords` helpers, and clearer metadata resource naming.
