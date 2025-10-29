@@ -6,6 +6,8 @@ import pytest
 from durak import (
     BASE_STOPWORDS,
     DEFAULT_STOPWORD_RESOURCE,
+    is_stopword,
+    list_stopwords,
     StopwordManager,
     StopwordSnapshot,
     load_stopword_resource,
@@ -56,7 +58,7 @@ def test_case_sensitive_mode_differentiates_tokens() -> None:
 
 
 def test_load_stopword_resource_handles_extends() -> None:
-    social_media = load_stopword_resource("tr/domains/social_media")
+    social_media = load_stopword_resource("domains/social_media")
     assert {"rt", "dm", "ve"} <= social_media
     assert BASE_STOPWORDS <= frozenset(social_media)
 
@@ -80,7 +82,7 @@ def test_export_and_snapshot_roundtrip(tmp_path: Path, data_dir: Path) -> None:
 
 
 def test_stopword_manager_from_resources_includes_domains() -> None:
-    manager = StopwordManager.from_resources(["tr/domains/social_media"])
+    manager = StopwordManager.from_resources(["domains/social_media"])
     assert manager.is_stopword("rt")
     assert manager.is_stopword("ve")
 
@@ -89,6 +91,33 @@ def test_remove_stopwords_filters_tokens() -> None:
     tokens = ["ve", "Durak", "ama"]
     filtered = remove_stopwords(tokens)
     assert filtered == ["Durak"]
+
+
+def test_legacy_resource_aliases_resolve() -> None:
+    new_name = load_stopword_resource("domains/social_media")
+    legacy_name = load_stopword_resource("tr/domains/social_media")
+    assert legacy_name == new_name
+
+
+def test_is_stopword_defaults_to_base_resource() -> None:
+    assert is_stopword("ve")
+    assert not is_stopword("durak")
+
+
+def test_is_stopword_supports_custom_resources() -> None:
+    assert is_stopword("rt", resource="domains/social_media")
+    assert is_stopword("rt", resource="tr/domains/social_media")
+
+
+def test_list_stopwords_returns_sorted_words() -> None:
+    words = list_stopwords()
+    assert words == sorted(words)
+    assert {"ve", "ama", "çünkü"} <= set(words)
+
+
+def test_list_stopwords_supports_alias_resources() -> None:
+    words = list_stopwords(resource="tr/domains/social_media")
+    assert {"rt", "dm"} <= set(words)
 
 
 @pytest.fixture

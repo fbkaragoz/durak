@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+from durak import tokenize
 from durak.tokenizer import normalize_tokens, split_sentences, tokenize_text
 from tests.data.corpus_validator import validate_corpus
 
@@ -46,3 +47,12 @@ def test_normalize_tokens_lowering_and_punct_stripping() -> None:
     tokens = ["Merhaba", ",", "DURAK", "!"]
     normalized = normalize_tokens(tokens, lower=True, strip_punct=True)
     assert normalized == ["merhaba", "durak"]
+
+
+def test_tokenize_accepts_strip_punct_flag() -> None:
+    text = "Durak, kolay mı?"
+    tokens_with_punct = tokenize(text)
+    assert tokens_with_punct == ["Durak", ",", "kolay", "mı", "?"]
+
+    tokens_without_punct = tokenize(text, strip_punct=True)
+    assert tokens_without_punct == ["Durak", "kolay", "mı"]
