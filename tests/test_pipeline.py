@@ -15,7 +15,9 @@ def test_process_text_with_stopword_removal() -> None:
 
 def test_process_text_respects_stopword_manager() -> None:
     manager = StopwordManager(keep=["test"])
-    tokens = process_text("Bu bir test!", remove_stopwords=True, stopword_manager=manager)
+    tokens = process_text(
+        "Bu bir test!", remove_stopwords=True, stopword_manager=manager
+    )
     assert tokens == ["test", "!"]
 
 

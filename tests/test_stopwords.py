@@ -6,12 +6,11 @@ import pytest
 from durak import (
     BASE_STOPWORDS,
     DEFAULT_STOPWORD_RESOURCE,
-    is_stopword,
-    list_stopwords,
     StopwordManager,
     StopwordSnapshot,
+    is_stopword,
+    list_stopwords,
     load_stopword_resource,
-    load_stopword_resources,
     load_stopwords,
     remove_stopwords,
 )
