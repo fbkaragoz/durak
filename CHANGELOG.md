@@ -6,6 +6,13 @@ All notable changes to Durak will be documented here. This project adheres to [S
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
 
+## [0.2.1] - 2025-10-29
+
+### Fixed
+- Corrected CITATION.cff format for Zenodo DOI generation
+- Removed duplicate identifiers and invalid DOI placeholder
+- Standardized citation metadata structure
+
 ## [0.2.0] - 2025-10-29
 
 - Promoted stopword utilities to the top-level API, including `remove_stopwords`,
