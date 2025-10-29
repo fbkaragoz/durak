@@ -17,7 +17,8 @@ Durak's tokenizer module should support multiple strategies while honouring Turk
 - Leave placeholder implementation raising `NotImplementedError`, allowing future adapters (BPE, WordPiece).
 
 ## API Sketch
-- `tokenize_text(text: str, strategy: str = "regex", **kwargs) -> list[str]`
+- `tokenize(text: str | None, *, strategy: str = "regex", strip_punct: bool = False) -> list[str]`
+- `tokenize_text(text: str | None, strategy: str = "regex", *, strip_punct: bool = False) -> list[str]` (backward-compatible wrapper)
 - `split_sentences(text: str, strategy: str = "regex", **kwargs) -> list[str]`
 - `normalize_tokens(tokens: Iterable[str], *, lower: bool = True, strip_punct: bool = False) -> list[str]`
 - Strategy registry enabling custom tokenizers/splitters via callables.
