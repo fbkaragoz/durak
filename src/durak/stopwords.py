@@ -12,7 +12,7 @@ from typing import Any, cast
 from durak.cleaning import normalize_case
 
 STOPWORD_DATA_DIR = Path(__file__).resolve().parent / "data" / "stopwords"
-DEFAULT_STOPWORD_RESOURCE = "tr/base"
+DEFAULT_STOPWORD_RESOURCE = "base/turkish"
 STOPWORD_METADATA_PATH = STOPWORD_DATA_DIR / "metadata.json"
 
 __all__ = [
@@ -115,8 +115,34 @@ def _collect_resource_words(
     except KeyError as exc:
         raise StopwordMetadataError(f"Unknown stopword resource '{resource_name}'.") from exc
 
+    alias_target = entry.get("alias")
+    if alias_target is not None and not isinstance(alias_target, str):
+        raise StopwordMetadataError("Stopword resource 'alias' must be a string.")
+
     stack.add(resource_name)
     try:
+        if alias_target:
+            if not alias_target.strip():
+                raise StopwordMetadataError(
+                    f"Stopword resource '{resource_name}' alias cannot be empty."
+                )
+            invalid_fields = set(entry) - {"alias", "description"}
+            if invalid_fields:
+                fields = ", ".join(sorted(invalid_fields))
+                raise StopwordMetadataError(
+                    f"Stopword alias '{resource_name}' cannot define additional fields: {fields}."
+                )
+            aliased_words = _collect_resource_words(
+                alias_target,
+                sets=sets,
+                base_dir=base_dir,
+                case_sensitive=case_sensitive,
+                stack=stack,
+                cache=cache,
+            )
+            cache[resource_name] = aliased_words
+            return aliased_words
+
         words: set[str] = set()
         extends = _ensure_sequence(entry.get("extends"), field="extends")
         for parent in extends:
