@@ -30,16 +30,18 @@ Copyright © 2025 Fatih Burak Karagöz. All rights reserved.
 
 5. Attribution  
    Every public distribution of the Software or a Derivative Work must:  
-   (a) retain all copyright, patent, trademark, and attribution notices;  
-   (b) prominently display the following notice in the README, documentation, or equivalent location:  
-    - `Original work: Copyright © 2025 Fatih Burak Karagöz`
-    - `Repository: https://github.com/fbkaragoz/durak`
-    - `Licensed under the Durak Non-Commercial Open Source License v1.2`
-
+   (a) retain all copyright, patent, trademark, and attribution notices;
+   
+   (b) prominently display the following **exact** notice:
+        ```
+        Original work: Copyright © 2025 Fatih Burak Karagöz
+        Repository: https://github.com/fbkaragoz/durak
+        Licensed under the Durak Non-Commercial Open Source License v1.2
+        ```
 6. Academic & Research Acknowledgment  
 If the Software or a Derivative Work is used in any academic publication, dataset, or research output, the licensee must include a citation substantially in the following form:
-- `Karagöz, F. B. (2025). DURAK. Durak Non-Commercial Open Source License v1.2.`
-- `https://github.com/fbkaragoz/durak`
+ `Karagöz, F. B. (2025). Durak NLP: Turkish Natural Language Processing Toolkit. Durak Non-Commercial Open Source License v1.2.`
+ `https://github.com/fbkaragoz/durak`
 
 
 7. Commercial Licensing  
@@ -56,6 +58,12 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
  10.1 This License is governed by the laws of the Republic of Türkiye.  
  10.2 If any provision is held invalid, the remainder remains in full force.  
  10.3 The Copyright Holder may publish revised versions of this License. Unless the licensee explicitly adopts a newer version, this version 1.2 governs.
+
+## SPDX License Expression
+This license is identified in the SPDX License List as `LicenseRef-Durak-NonCommercial-1.2`.  
+The full text is included in this file and at:  
+https://github.com/fbkaragoz/durak/blob/main/LICENSE
+
 
 ---  
 
