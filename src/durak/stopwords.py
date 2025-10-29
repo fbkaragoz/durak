@@ -25,6 +25,7 @@ __all__ = [
     "load_stopword_resource",
     "load_stopword_resources",
     "load_stopwords",
+    "remove_stopwords",
 ]
 
 
@@ -213,6 +214,44 @@ def load_stopwords(path: Path | str, *, case_sensitive: bool = False) -> set[str
 BASE_STOPWORDS: frozenset[str] = frozenset(
     load_stopword_resource(DEFAULT_STOPWORD_RESOURCE, case_sensitive=False)
 )
+
+
+def remove_stopwords(
+    tokens: Iterable[str] | None,
+    *,
+    manager: StopwordManager | None = None,
+    base: Iterable[str] | None = None,
+    additions: Iterable[str] | None = None,
+    keep: Iterable[str] | None = None,
+    case_sensitive: bool | None = None,
+) -> list[str]:
+    """Return tokens that are not stopwords."""
+    if tokens is None:
+        return []
+    if manager is None:
+        resolved_case_sensitive = case_sensitive if case_sensitive is not None else False
+        resolved_base = base if base is not None else BASE_STOPWORDS
+        manager = StopwordManager(
+            base=resolved_base,
+            additions=additions,
+            keep=keep,
+            case_sensitive=resolved_case_sensitive,
+        )
+    else:
+        if case_sensitive is not None and case_sensitive != manager.case_sensitive:
+            raise ValueError(
+                "Provided case_sensitive does not match the supplied manager."
+            )
+        if base is not None or additions is not None or keep is not None:
+            raise ValueError(
+                "Cannot provide base/additions/keep when a manager instance is supplied."
+            )
+
+    filtered: list[str] = []
+    for token in tokens:
+        if not manager.is_stopword(token):
+            filtered.append(token)
+    return filtered
 
 
 @dataclass(frozen=True)
