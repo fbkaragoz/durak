@@ -24,3 +24,23 @@ def test_process_text_respects_stopword_manager() -> None:
 def test_process_text_stopword_options_require_flag() -> None:
     with pytest.raises(ValueError):
         process_text("Bu bir test!", stopword_base=["custom"])
+
+
+def test_process_text_rejoin_suffixes_with_apostrophe() -> None:
+    tokens = process_text("Ankara ' da kaldım.", rejoin_suffixes=True)
+    assert tokens[:2] == ["ankara'da", "kaldım"]
+
+
+def test_process_text_rejoin_suffixes_without_apostrophe() -> None:
+    tokens = process_text("Ankara da kaldım.", rejoin_suffixes=True)
+    assert tokens[:2] == ["ankarada", "kaldım"]
+
+
+def test_process_text_rejoin_suffixes_respects_flag() -> None:
+    tokens = process_text("Ankara ' da kaldım.")
+    assert tokens[:2] == ["ankara", "'"]
+
+
+def test_process_text_rejoin_suffixes_requires_flag() -> None:
+    with pytest.raises(ValueError):
+        process_text("Ankara ' da kaldım.", rejoin_suffix_list=["da"])
