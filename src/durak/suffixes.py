@@ -59,7 +59,10 @@ def attach_detached_suffixes(
         return []
 
     suffix_set = {suffix.lower() for suffix in (suffixes or DEFAULT_DETACHED_SUFFIXES)}
-    apostrophe_set = tuple(apostrophes) if apostrophes is not None else APOSTROPHE_TOKENS
+    if apostrophes is not None:
+        apostrophe_set = tuple(apostrophes)
+    else:
+        apostrophe_set = APOSTROPHE_TOKENS
 
     merged: list[str] = []
     index = 0
@@ -100,4 +103,3 @@ def attach_detached_suffixes(
         index += 1
 
     return merged
-
