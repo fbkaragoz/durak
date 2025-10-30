@@ -6,6 +6,14 @@ All notable changes to Durak will be documented here. This project adheres to [S
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
 
+## [0.2.3] - 2025-10-29
+
+### Added
+- Introduced optional suffix reattachment in `process_text` (`rejoin_suffixes`) and exposed `attach_detached_suffixes` for manual pipelines to stabilise noisy corpora.
+
+### Changed
+- Expanded the base Turkish stopword list with apostrophe-prefixed and suffix-oriented variants to better capture colloquial usage.
+
 ## [0.2.2] - 2025-10-29
 
 ### Fixed
@@ -32,6 +40,7 @@ All notable changes to Durak will be documented here. This project adheres to [S
 - Introduced regex-based tokenizer, sentence splitting, and corpus validator integration.
 - Provided development tooling (pytest, ruff, mypy configs) and packaging metadata for TestPyPI/PyPI releases.
 
-[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/fbkaragoz/durak/compare/v0.2.2...v0.2.3
 [0.2.0]: https://github.com/fbkaragoz/durak/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fbkaragoz/durak/releases/tag/v0.1.0
