@@ -53,3 +53,13 @@ def test_process_text_removes_common_suffix_stopwords() -> None:
         rejoin_suffixes=True,
     )
     assert tokens == ["ankara'da", 'ilginç', 'şeyler', '.']
+
+
+def test_process_text_suffix_without_apostrophe_disabled() -> None:
+    tokens = process_text(
+        "Ankara ya gidiyoruz.",
+        remove_stopwords=True,
+        rejoin_suffixes=True,
+        rejoin_suffix_allow_without_apostrophe=False,
+    )
+    assert tokens == ['ankara', 'gidiyoruz', '.']
