@@ -44,3 +44,12 @@ def test_process_text_rejoin_suffixes_respects_flag() -> None:
 def test_process_text_rejoin_suffixes_requires_flag() -> None:
     with pytest.raises(ValueError):
         process_text("Ankara ' da kaldım.", rejoin_suffix_list=["da"])
+
+
+def test_process_text_removes_common_suffix_stopwords() -> None:
+    tokens = process_text(
+        "Ankara ' da çok ilginç şeyler var.",
+        remove_stopwords=True,
+        rejoin_suffixes=True,
+    )
+    assert tokens == ["ankara'da", 'ilginç', 'şeyler', '.']
