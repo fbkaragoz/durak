@@ -5,8 +5,15 @@ All notable changes to Durak will be documented here. This project adheres to [S
 ## [Unreleased]
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
-- Clarified README quickstart with explicit pipeline order and modular examples.
-- Synced packaged stopword data to remove detached suffix tokens like "var" after reattachment.
+
+## [0.2.4] - 2025-10-30
+
+### Fixed
+- Synced packaged stopword data with the expanded list so reattached tokens like "var" and "bi" are filtered consistently across installs.
+- Added regression coverage ensuring stopword removal runs after suffix reattachment in the pipeline.
+
+### Changed
+- Clarified README quickstart with explicit pipeline order, suffix reattachment guidance, and modular usage examples.
 
 ## [0.2.3] - 2025-10-29
 
@@ -42,7 +49,8 @@ All notable changes to Durak will be documented here. This project adheres to [S
 - Introduced regex-based tokenizer, sentence splitting, and corpus validator integration.
 - Provided development tooling (pytest, ruff, mypy configs) and packaging metadata for TestPyPI/PyPI releases.
 
-[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/fbkaragoz/durak/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/fbkaragoz/durak/compare/v0.2.2...v0.2.3
 [0.2.0]: https://github.com/fbkaragoz/durak/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fbkaragoz/durak/releases/tag/v0.1.0
