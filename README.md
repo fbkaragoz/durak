@@ -18,41 +18,65 @@ Durak is a Turkish natural language processing toolkit focused on reliable prepr
 
 ## Quickstart
 
-Install from PyPI:
+### 1. Install
 
 ```bash
 pip install durak-nlp
 ```
 
-Clean and tokenize Turkish text in seconds:
+### 2. Minimal pipeline
 
 ```python
-from durak import clean_text, process_text, tokenize, remove_stopwords
+from durak import process_text
 
-text = "Bu bir test. Durak kolaylaştırır."
-tokens = tokenize(clean_text(text))
-print(tokens)
-# ['bu', 'bir', 'test', '.', 'durak', 'kolaylaştırır', '.']
+entries = [
+    "Türkiye'de NLP zor. Durak kolaylaştırır.",
+    "Ankara ' da kaldım.",
+]
 
-filtered = remove_stopwords(tokens)
-print(filtered)
-# ['test', '.', 'durak', 'kolaylaştırır', '.']
+tokens = [
+    process_text(
+        entry,
+        remove_stopwords=True,
+        rejoin_suffixes=True,  # glue detached suffixes before filtering
+    )
+    for entry in entries
+]
 
-processed = process_text(text, remove_stopwords=True)
-print(processed)
-# ['test', '.', 'durak', 'kolaylaştırır', '.']
+print(tokens[0])
+# ["türkiye'de", 'nlp', 'zor', '.', 'durak', 'kolaylaştırır', '.']
 
-# Repair detached suffix tokens (e.g., `Ankara ' da` → `ankara'da`) on demand:
-suffix_fixed = process_text(
-    "Ankara ' da kaldım ya",
-    rejoin_suffixes=True,
-    remove_stopwords=True,
-)
-print(suffix_fixed)
-# ['ankara\'da', 'kaldım']
+print(tokens[1])
+# ["ankara'da", 'kaldım', '.']
 ```
 
+The pipeline executes the steps in order: clean → tokenize → rejoin detached suffixes (when enabled) → remove stopwords (when enabled). This keeps noisy social-media strings consistent before filtering.
+
 Need a quick lookup? `is_stopword("ve")` returns `True`, while `list_stopwords()[:5]` reveals the first few entries of the curated base set.
+
+### 3. Build blocks à la carte
+
+```python
+from durak import (
+    StopwordManager,
+    attach_detached_suffixes,
+    clean_text,
+    remove_stopwords,
+    tokenize,
+)
+
+text = "İstanbul ' a vapurla geçtik."
+cleaned = clean_text(text)
+tokens = tokenize(cleaned)
+tokens = attach_detached_suffixes(tokens)
+
+# Keep custom terms while extending the curated stopwords
+manager = StopwordManager(additions=["vapurla"], keep=["istanbul'a"])
+filtered = remove_stopwords(tokens, manager=manager)
+
+print(filtered)
+# ["istanbul'a", 'geçtik', '.']
+```
 
 ## Features
 

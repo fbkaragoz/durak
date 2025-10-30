@@ -5,6 +5,8 @@ All notable changes to Durak will be documented here. This project adheres to [S
 ## [Unreleased]
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
+- Clarified README quickstart with explicit pipeline order and modular examples.
+- Synced packaged stopword data to remove detached suffix tokens like "var" after reattachment.
 
 ## [0.2.3] - 2025-10-29
 
