@@ -44,10 +44,10 @@ tokens = [
 ]
 
 print(tokens[0])
-# ["türkiye'de", 'nlp', 'zor', '.', 'durak', 'kolaylaştırır', '.']
+# ["türkiye'de", "nlp", "zor", ".", "durak", "kolaylaştırır", "."]
 
 print(tokens[1])
-# ["ankara'da", 'kaldım', '.']
+# ["ankara'da", "kaldım", "."]
 ```
 
 The pipeline executes the steps in order: clean → tokenize → rejoin detached suffixes (when enabled) → remove stopwords (when enabled). This keeps noisy social-media strings consistent before filtering.
@@ -75,7 +75,7 @@ manager = StopwordManager(additions=["vapurla"], keep=["istanbul'a"])
 filtered = remove_stopwords(tokens, manager=manager)
 
 print(filtered)
-# ["istanbul'a", 'geçtik', '.']
+# ["istanbul'a", "geçtik", "."]
 ```
 
 ## Features
