@@ -4,12 +4,7 @@ from __future__ import annotations
 
 from importlib import metadata
 
-from .cleaning import (
-    clean_text,
-    collapse_whitespace,
-    normalize_case,
-    normalize_unicode,
-)
+from .cleaning import clean_text, collapse_whitespace, normalize_case, normalize_unicode
 from .pipeline import process_text
 from .stopwords import (
     BASE_STOPWORDS,
@@ -23,14 +18,22 @@ from .stopwords import (
     load_stopwords,
     remove_stopwords,
 )
+from .suffixes import (
+    APOSTROPHE_TOKENS,
+    DEFAULT_DETACHED_SUFFIXES,
+    attach_detached_suffixes,
+)
 from .tokenizer import normalize_tokens, split_sentences, tokenize, tokenize_text
 
 __all__ = [
     "__version__",
+    "APOSTROPHE_TOKENS",
     "BASE_STOPWORDS",
     "DEFAULT_STOPWORD_RESOURCE",
+    "DEFAULT_DETACHED_SUFFIXES",
     "StopwordManager",
     "StopwordSnapshot",
+    "attach_detached_suffixes",
     "clean_text",
     "collapse_whitespace",
     "is_stopword",
