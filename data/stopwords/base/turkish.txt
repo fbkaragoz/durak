@@ -109,8 +109,6 @@ zaten
 bi
 kadar
 değil
-var
-kadar
 bile
 böyle
 sadece
