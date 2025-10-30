@@ -41,6 +41,15 @@ print(filtered)
 processed = process_text(text, remove_stopwords=True)
 print(processed)
 # ['test', '.', 'durak', 'kolaylaştırır', '.']
+
+# Repair detached suffix tokens (e.g., `Ankara ' da` → `ankara'da`) on demand:
+suffix_fixed = process_text(
+    "Ankara ' da kaldım ya",
+    rejoin_suffixes=True,
+    remove_stopwords=True,
+)
+print(suffix_fixed)
+# ['ankara\'da', 'kaldım']
 ```
 
 Need a quick lookup? `is_stopword("ve")` returns `True`, while `list_stopwords()[:5]` reveals the first few entries of the curated base set.
