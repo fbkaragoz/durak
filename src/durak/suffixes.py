@@ -3,24 +3,30 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
+from importlib import resources
 
 APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "’")
-DEFAULT_DETACHED_SUFFIXES: tuple[str, ...] = (
-    "in",
-    "ın",
-    "un",
-    "ün",
-    "nin",
-    "nın",
-    "nun",
-    "nün",
-    "de",
-    "da",
-    "te",
-    "ta",
-    "ye",
-    "ya",
-)
+
+DEFAULT_DETACHED_SUFFIXES: tuple[str, ...]
+
+
+def _load_detached_suffixes() -> tuple[str, ...]:
+    """Load the detached suffix list from the data directory."""
+    resource = resources.files("durak").joinpath(
+        "data",
+        "labels",
+        "DETACHED_SUFFIXES.txt",
+    )
+    try:
+        with resource.open(encoding="utf-8") as handle:
+            return tuple(line.strip() for line in handle if line.strip())
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "durak data file DETACHED_SUFFIXES.txt is missing from data/labels."
+        ) from exc
+
+
+DEFAULT_DETACHED_SUFFIXES = _load_detached_suffixes()
 
 __all__ = [
     "APOSTROPHE_TOKENS",
