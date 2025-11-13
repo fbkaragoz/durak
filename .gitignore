@@ -16,3 +16,12 @@ htmlcov/
 
 # local folders
 .etc/
+.claude/
+
+# temporary files
+tmp/*.txt
+tmp/*.json
+tmp/*.jsonl
+tmp/*.csv
+tmp/*.log
+tmp/*.db
