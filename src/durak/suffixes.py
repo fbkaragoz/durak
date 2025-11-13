@@ -7,8 +7,6 @@ from importlib import resources
 
 APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "’")
 
-DEFAULT_DETACHED_SUFFIXES: tuple[str, ...]
-
 
 def _load_detached_suffixes() -> tuple[str, ...]:
     """Load the detached suffix list from the data directory."""
@@ -27,12 +25,6 @@ def _load_detached_suffixes() -> tuple[str, ...]:
 
 
 DEFAULT_DETACHED_SUFFIXES = _load_detached_suffixes()
-
-__all__ = [
-    "APOSTROPHE_TOKENS",
-    "DEFAULT_DETACHED_SUFFIXES",
-    "attach_detached_suffixes",
-]
 
 
 def _has_alpha(token: str | None) -> bool:
@@ -109,3 +101,10 @@ def attach_detached_suffixes(
         index += 1
 
     return merged
+
+
+__all__ = [
+    "APOSTROPHE_TOKENS",
+    "DEFAULT_DETACHED_SUFFIXES",
+    "attach_detached_suffixes",
+]
