@@ -20,6 +20,11 @@ def test_base_stopwords_contains_common_tokens() -> None:
     assert {"ve", "ama", "çünkü"} <= BASE_STOPWORDS
 
 
+def test_base_stopwords_includes_new_suffix_variants() -> None:
+    assert "öyle" in BASE_STOPWORDS
+    assert remove_stopwords(["öyle", "adam"]) == ["adam"]
+
+
 def test_base_stopwords_matches_resource_definition() -> None:
     resource_words = load_stopword_resource(DEFAULT_STOPWORD_RESOURCE)
     assert BASE_STOPWORDS == frozenset(resource_words)
