@@ -152,13 +152,14 @@ def clean_text(
     text: str | None, *, steps: Iterable[Callable[[str], str]] | None = None
 ) -> str:
     """Apply the configured cleaning steps sequentially."""
-    if text is None:
+    if not text:
         return ""
     pipeline = tuple(steps) if steps is not None else DEFAULT_CLEANING_STEPS
     cleaned = text
     for step in pipeline:
         cleaned = step(cleaned)
-    return cleaned
+    # Always collapse whitespace at the end for consistent output.
+    return collapse_whitespace(cleaned) if steps is not None else cleaned
 
 
 __all__ = [
