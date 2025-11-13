@@ -11,6 +11,7 @@ All notable changes to Durak will be documented here. This project adheres to [S
 ### Fixed
 - Synced packaged stopword data with the expanded list so reattached tokens like "var" and "bi" are filtered consistently across installs.
 - Added regression coverage ensuring stopword removal runs after suffix reattachment in the pipeline.
+- Augmented the base stopword list with conversational tokens such as "öyle" highlighted by renewed corpus analysis.
 
 ### Changed
 - Clarified README quickstart with explicit pipeline order, suffix reattachment guidance, and modular usage examples.
