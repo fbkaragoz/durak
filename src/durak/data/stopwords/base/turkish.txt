@@ -115,3 +115,4 @@ sadece
 artık
 bunu
 olur
+öyle
