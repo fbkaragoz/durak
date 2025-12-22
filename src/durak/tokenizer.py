@@ -137,6 +137,16 @@ def split_sentences(text: str, strategy: str = "regex") -> list[str]:
     return splitter(text)
 
 
+
+
+
+try:
+    from _durak_core import tokenize_with_offsets
+except ImportError:
+    def tokenize_with_offsets(text: str) -> list[tuple[str, int, int]]:
+        raise ImportError("Rust extension not installed")
+
+
 def normalize_tokens(
     tokens: Iterable[str],
     *,

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from importlib import metadata
 
-from .pipeline import Pipeline, process_text
-from .normalizer import Normalizer
 from .cleaning import clean_text, collapse_whitespace, normalize_case, normalize_unicode
+from .lemmatizer import Lemmatizer
+from .normalizer import Normalizer
+from .pipeline import Pipeline, process_text
 from .stopwords import (
     BASE_STOPWORDS,
     DEFAULT_STOPWORD_RESOURCE,
@@ -24,7 +25,13 @@ from .suffixes import (
     DEFAULT_DETACHED_SUFFIXES,
     attach_detached_suffixes,
 )
-from .tokenizer import normalize_tokens, split_sentences, tokenize, tokenize_text
+from .tokenizer import (
+    normalize_tokens,
+    split_sentences,
+    tokenize,
+    tokenize_text,
+    tokenize_with_offsets,
+)
 
 __all__ = [
     "__version__",
@@ -32,6 +39,9 @@ __all__ = [
     "BASE_STOPWORDS",
     "DEFAULT_STOPWORD_RESOURCE",
     "DEFAULT_DETACHED_SUFFIXES",
+    "Lemmatizer",
+    "Normalizer",
+    "Pipeline",
     "StopwordManager",
     "StopwordSnapshot",
     "attach_detached_suffixes",
@@ -50,9 +60,12 @@ __all__ = [
     "split_sentences",
     "tokenize",
     "tokenize_text",
+    "tokenize_with_offsets",
+    "Tokenizer",
+    "TokenizationError",
 ]
 
 try:
     __version__ = metadata.version("durak-nlp")
 except metadata.PackageNotFoundError:  # pragma: no cover - fallback during dev installs
-    __version__ = "0.2.0"
+    __version__ = "0.3.0"

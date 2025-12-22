@@ -17,7 +17,8 @@ class Lemmatizer:
     Tiered Lemmatizer backed by Rust.
     
     Strategies:
-    - lookup: Use only the exact dictionary (fastest, high precision, low recall on OOV).
+    - lookup: Use only the exact dictionary 
+      (fastest, high precision, low recall on OOV).
     - heuristic: Use only suffix stripping (fast, works on OOV, lower precision).
     - hybrid: Try lookup first, fallback to heuristic (default).
     """

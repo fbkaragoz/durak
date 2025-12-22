@@ -10,9 +10,7 @@ APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "’")
 
 def _load_detached_suffixes() -> tuple[str, ...]:
     """Load the detached suffix list from the data directory."""
-    resource = resources.files("durak").joinpath(
-        "data", "labels", "DETACHED_SUFFIXES.txt"
-    )
+    resource = resources.files("durak").joinpath("data").joinpath("labels").joinpath("DETACHED_SUFFIXES.txt")
     try:
         with resource.open(encoding="utf-8") as handle:
             return tuple(line.strip() for line in handle if line.strip())

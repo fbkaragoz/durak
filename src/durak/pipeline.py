@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any
 
 from durak.cleaning import clean_text
@@ -33,13 +34,14 @@ class Pipeline:
             doc = step(doc)
         return doc
 
-    def pipe(self, texts: list[str], batch_size: int = 1000) -> list[Any]:
+    def pipe(self, texts: list[str], batch_size: int = 1000) -> Iterable[Any]:
         """
         Process a stream of texts efficiently.
         
         Args:
             texts (list[str]): Input texts.
-            batch_size (int): Size of batches (reserved for future Rust parallelization).
+            batch_size (int): Size of batches (reserved for 
+                future Rust parallelization).
             
         Yields:
             Any: Processed documents.
@@ -58,15 +60,17 @@ def process_text(
     *,
     remove_stopwords: bool = False,
     rejoin_suffixes: bool = False,
-    # These params are kept for signature compatibility but might need implementation update
+    # These params are kept for signature compatibility 
+    # but might need implementation update
     **kwargs: Any
 ) -> list[str]:
     """
     Legacy wrapper for backward compatibility.
     
-    This function mimics the old behavior using the new architecture or existing components.
-    Since we haven't deleted the old cleaning/tokenizer modules yet, we can import them locally
-    or assume they are available to replicate the old flow.
+    This function mimics the old behavior using the new architecture or 
+    existing components. Since we haven't deleted the old cleaning/tokenizer 
+    modules yet, we can import them locally or assume they are available 
+    to replicate the old flow.
     """
     
     # Replicate original pipeline logic from Quickstart:
