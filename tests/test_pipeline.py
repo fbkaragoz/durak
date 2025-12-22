@@ -1,5 +1,5 @@
 import pytest
-import durak
+
 from durak.normalizer import Normalizer
 from durak.pipeline import Pipeline
 
@@ -17,7 +17,7 @@ def test_pipeline_execution():
     # If Rust extension is not built, this might fail or fallback.
     # We expect it to work if the environment is set up correctly.
     try:
-        from _durak_core import fast_normalize
+        import _durak_core  # noqa: F401
     except ImportError:
         pytest.skip("Rust extension not installed")
 
@@ -33,7 +33,7 @@ def test_pipeline_execution():
 
 def test_batch_processing():
     try:
-        from _durak_core import fast_normalize
+        import _durak_core  # noqa: F401
     except ImportError:
         pytest.skip("Rust extension not installed")
         

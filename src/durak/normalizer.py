@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Any
-
 try:
     from _durak_core import fast_normalize
 except ImportError:
     # Fallback or initialization error handling
     def fast_normalize(text: str) -> str:
-        raise ImportError("Durak Rust extension (_durak_core) is not installed/compiled.")
+        raise ImportError(
+            "Durak Rust extension (_durak_core) is not installed/compiled."
+        )
 
 class Normalizer:
     """
@@ -42,4 +42,7 @@ class Normalizer:
         return fast_normalize(text)
 
     def __repr__(self) -> str:
-        return f"Normalizer(lowercase={self.lowercase}, handle_turkish_i={self.handle_turkish_i})"
+        return (
+            f"Normalizer(lowercase={self.lowercase}, "
+            f"handle_turkish_i={self.handle_turkish_i})"
+        )
