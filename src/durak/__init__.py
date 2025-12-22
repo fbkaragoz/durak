@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from importlib import metadata
 
+from .pipeline import Pipeline, process_text
+from .normalizer import Normalizer
 from .cleaning import clean_text, collapse_whitespace, normalize_case, normalize_unicode
-from .pipeline import process_text
 from .stopwords import (
     BASE_STOPWORDS,
     DEFAULT_STOPWORD_RESOURCE,

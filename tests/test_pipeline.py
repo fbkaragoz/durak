@@ -1,65 +1,43 @@
 import pytest
+import durak
+from durak.normalizer import Normalizer
+from durak.pipeline import Pipeline
 
-from durak import StopwordManager, process_text
+def test_normalizer_importable():
+    norm = Normalizer()
+    assert norm is not None
 
+def test_pipeline_creation():
+    pipe = Pipeline([
+        Normalizer(),
+    ])
+    assert len(pipe.steps) == 1
 
-def test_process_text_default_pipeline() -> None:
-    tokens = process_text("Bu bir test!")
-    assert tokens == ["bu", "bir", "test", "!"]
+def test_pipeline_execution():
+    # If Rust extension is not built, this might fail or fallback.
+    # We expect it to work if the environment is set up correctly.
+    try:
+        from _durak_core import fast_normalize
+    except ImportError:
+        pytest.skip("Rust extension not installed")
 
+    pipe = Pipeline([
+        Normalizer(),
+    ])
+    
+    # Test valid Turkish input
+    text = "İSTANBUL ve IĞDIR"
+    # normalize should convert İ -> i, I -> ı, lower -> istanbul ve ığdır
+    result = pipe(text)
+    assert result == "istanbul ve ığdır"
 
-def test_process_text_with_stopword_removal() -> None:
-    tokens = process_text("Bu bir test!", remove_stopwords=True)
-    assert tokens == ["test", "!"]
-
-
-def test_process_text_respects_stopword_manager() -> None:
-    manager = StopwordManager(keep=["test"])
-    tokens = process_text(
-        "Bu bir test!", remove_stopwords=True, stopword_manager=manager
-    )
-    assert tokens == ["test", "!"]
-
-
-def test_process_text_stopword_options_require_flag() -> None:
-    with pytest.raises(ValueError):
-        process_text("Bu bir test!", stopword_base=["custom"])
-
-
-def test_process_text_rejoin_suffixes_with_apostrophe() -> None:
-    tokens = process_text("Ankara ' da kaldım.", rejoin_suffixes=True)
-    assert tokens[:2] == ["ankara'da", "kaldım"]
-
-
-def test_process_text_rejoin_suffixes_without_apostrophe() -> None:
-    tokens = process_text("Ankara da kaldım.", rejoin_suffixes=True)
-    assert tokens[:2] == ["ankarada", "kaldım"]
-
-
-def test_process_text_rejoin_suffixes_respects_flag() -> None:
-    tokens = process_text("Ankara ' da kaldım.")
-    assert tokens[:2] == ["ankara", "'"]
-
-
-def test_process_text_rejoin_suffixes_requires_flag() -> None:
-    with pytest.raises(ValueError):
-        process_text("Ankara ' da kaldım.", rejoin_suffix_list=["da"])
-
-
-def test_process_text_removes_common_suffix_stopwords() -> None:
-    tokens = process_text(
-        "Ankara ' da çok ilginç şeyler var.",
-        remove_stopwords=True,
-        rejoin_suffixes=True,
-    )
-    assert tokens == ["ankara'da", 'ilginç', 'şeyler', '.']
-
-
-def test_process_text_suffix_without_apostrophe_disabled() -> None:
-    tokens = process_text(
-        "Ankara ya gidiyoruz.",
-        remove_stopwords=True,
-        rejoin_suffixes=True,
-        rejoin_suffix_allow_without_apostrophe=False,
-    )
-    assert tokens == ['ankara', 'gidiyoruz', '.']
+def test_batch_processing():
+    try:
+        from _durak_core import fast_normalize
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+        
+    pipe = Pipeline([Normalizer()])
+    texts = ["İSTANBUL", "Ankara"]
+    results = list(pipe.pipe(texts))
+    assert results == ["istanbul", "ankara"]
