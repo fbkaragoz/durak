@@ -10,7 +10,13 @@
   <img src="https://raw.githubusercontent.com/fbkaragoz/durak/main/docs/durak.svg" alt="Durak logo" width="200" />
 </p>
 
-Durak is a Turkish natural language processing toolkit focused on reliable preprocessing building blocks. It offers configurable cleaning, tokenisation, stopword management, lemmatisation adapters, and frequency statistics so projects can bootstrap robust text pipelines quickly.
+Durak is a **high-performance Turkish NLP engine** built on a "Rust Core, Python Interface" architecture. It handles heavy lifting (normalization, tokenization, lookup) in compiled Rust (releasing the GIL) while providing a flexible, PyTorch-like API for Python researchers.
+
+**Key Features:**
+- **The Iron Core**: Rust backend for blazing fast processing.
+- **True Parallelism**: Releases GIL for multi-core batch processing.
+- **Research Ready**: Designed for reproducibility and easy integration.
+
 
 - Homepage: [karagoz.io](https://karagoz.io)
 - Repository: [github.com/fbkaragoz/durak](https://github.com/fbkaragoz/durak)
