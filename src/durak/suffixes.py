@@ -11,9 +11,7 @@ APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "’")
 def _load_detached_suffixes() -> tuple[str, ...]:
     """Load the detached suffix list from the data directory."""
     resource = resources.files("durak").joinpath(
-        "data",
-        "labels",
-        "DETACHED_SUFFIXES.txt",
+        "data", "labels", "DETACHED_SUFFIXES.txt"
     )
     try:
         with resource.open(encoding="utf-8") as handle:
@@ -28,7 +26,7 @@ DEFAULT_DETACHED_SUFFIXES = _load_detached_suffixes()
 
 
 def _has_alpha(token: str | None) -> bool:
-    return bool(token) and any(char.isalpha() for char in token)
+    return bool(token) and any(char.isalpha() for char in (token or ""))
 
 
 def _matches_suffix(token: str | None, suffixes: set[str]) -> bool:

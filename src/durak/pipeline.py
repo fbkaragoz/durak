@@ -1,15 +1,21 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Iterable, List
+from typing import Any
+
+from durak.cleaning import clean_text
+from durak.stopwords import remove_stopwords as remove_stopwords_func
+from durak.suffixes import attach_detached_suffixes
+from durak.tokenizer import tokenize
+
 
 class Pipeline:
     """
     A sequential processing pipeline, similar to torch.nn.Sequential.
     
     Args:
-        steps (List[Any]): A list of callable components (e.g. Normalizer).
+        steps (list[Any]): A list of callable components (e.g. Normalizer).
     """
-    def __init__(self, steps: List[Any]):
+    def __init__(self, steps: list[Any]):
         self.steps = steps
 
     def __call__(self, text: str) -> Any:
@@ -27,12 +33,12 @@ class Pipeline:
             doc = step(doc)
         return doc
 
-    def pipe(self, texts: Iterable[str], batch_size: int = 1000) -> Iterable[Any]:
+    def pipe(self, texts: list[str], batch_size: int = 1000) -> list[Any]:
         """
         Process a stream of texts efficiently.
         
         Args:
-            texts (Iterable[str]): Input texts.
+            texts (list[str]): Input texts.
             batch_size (int): Size of batches (reserved for future Rust parallelization).
             
         Yields:
@@ -45,7 +51,7 @@ class Pipeline:
 
     def __repr__(self) -> str:
         step_names = [repr(step) for step in self.steps]
-        return f"Pipeline([\n  " + ",\n  ".join(step_names) + "\n])"
+        return "Pipeline([\n  " + ",\n  ".join(step_names) + "\n])"
 
 def process_text(
     text: str,
@@ -62,10 +68,6 @@ def process_text(
     Since we haven't deleted the old cleaning/tokenizer modules yet, we can import them locally
     or assume they are available to replicate the old flow.
     """
-    from durak.cleaning import clean_text
-    from durak.tokenizer import tokenize, normalize_tokens
-    from durak.stopwords import remove_stopwords as remove_stopwords_func
-    from durak.suffixes import attach_detached_suffixes
     
     # Replicate original pipeline logic from Quickstart:
     # clean -> tokenize -> rejoin -> remove stopwords
