@@ -1,8 +1,10 @@
 use pyo3::prelude::*;
 use std::collections::HashMap;
 use std::sync::OnceLock;
+use regex::Regex;
 
 static LEMMA_DICT: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
+static TOKEN_REGEX: OnceLock<Regex> = OnceLock::new();
 
 fn get_lemma_dict() -> &'static HashMap<&'static str, &'static str> {
     LEMMA_DICT.get_or_init(|| {
@@ -12,6 +14,22 @@ fn get_lemma_dict() -> &'static HashMap<&'static str, &'static str> {
         m.insert("geliyorum", "gel");
         m.insert("gittim", "git");
         m
+    })
+}
+
+fn get_token_regex() -> &'static Regex {
+    TOKEN_REGEX.get_or_init(|| {
+        // Regex patterns tuned for Turkish tokenization (ported from Python)
+        // URL, Emoticon, Apostrophe, Number, Word, Punctuation
+        let pattern = r"(?x)
+            (https?://[^\s]+|www\.[^\s]+) |          # URL
+            ([:;=8][-^']?[)DPOo(\[/\\]) |            # Emoticon
+            ([A-Za-zÇĞİÖŞÜçğıöşü]+(?:'[A-Za-zÇĞİÖŞÜçğıöşü]+)?) | # Apostrophe
+            (\d+(?:[.,]\d+)*(?:[-–]\d+)?) |          # Number
+            ([A-Za-zÇĞİÖŞÜçğıöşü]+(?:-[A-Za-zÇĞİÖŞÜçğıöşü]+)*) | # Word
+            ([^\w\s])                                # Punctuation
+        ";
+        Regex::new(pattern).expect("Invalid regex pattern")
     })
 }
 
@@ -26,6 +44,42 @@ fn fast_normalize(text: &str) -> String {
         'I' => 'ı',
         _ => c.to_lowercase().next().unwrap_or(c)
     }).collect()
+}
+
+/// Tokenize text and return tokens with their start and end character offsets.
+/// Returns a list of (token, start, end).
+#[pyfunction]
+fn tokenize_with_offsets(text: &str) -> Vec<(String, usize, usize)> {
+    let re = get_token_regex();
+    let mut results = Vec::new();
+
+    for caps in re.captures_iter(text) {
+        if let Some(mat) = caps.get(0) {
+            let token = mat.as_str().to_string();
+            // In Rust regex, `mat.start()` and `mat.end()` return byte indices.
+            // Python expects character indices. We must convert carefully.
+            // However, typical NLP tools often work with byte offsets or char offsets.
+            // Here we want char offsets strictly for Python compatibility if possible,
+            // OR we just return byte offsets and let Python handle it?
+            // "The Fix: Your Rust tokenizer must return Offset Mappings (start/end indices pointing back to the original raw text)"
+            // Usually Python users expect char indices.
+            
+            // Converting byte offset to char offset is O(N) scan unless we map it.
+            // For now, let's just return what Regex gives us, which is byte offsets, 
+            // BUT for this PoC we can do a quick char count up to that point if we want absolute correctness,
+            // or just note that these are byte offsets (Rust UTF-8).
+            // Let's implement char offset conversion for correctness.
+            let byte_start = mat.start();
+            let byte_end = mat.end();
+            
+            let char_start = text[..byte_start].chars().count();
+            let char_len = text[byte_start..byte_end].chars().count();
+            let char_end = char_start + char_len;
+            
+            results.push((token, char_start, char_end));
+        }
+    }
+    results
 }
 
 /// Tier 1: Exact Lookup
@@ -65,5 +119,6 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(fast_normalize, m)?)?;
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
     m.add_function(wrap_pyfunction!(strip_suffixes, m)?)?;
+    m.add_function(wrap_pyfunction!(tokenize_with_offsets, m)?)?;
     Ok(())
 }
