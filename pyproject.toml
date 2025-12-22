@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "durak-nlp"
-version = "0.2.4"
+version = "0.3.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -64,6 +64,7 @@ lint.ignore = ["B905"]  # allow zip without strict length checks
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+pythonpath = "src"
 
 [tool.coverage.run]
 branch = true

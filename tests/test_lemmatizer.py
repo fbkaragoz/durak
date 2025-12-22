@@ -2,6 +2,7 @@ import pytest
 
 from durak.lemmatizer import Lemmatizer
 
+
 def test_tier1_lookup():
     try:
         import _durak_core  # noqa: F401
@@ -41,6 +42,11 @@ def test_hybrid_priority():
     assert lemmatizer("arabalar") == "araba"
 
 def test_protection_rule():
+    try:
+        import _durak_core  # noqa: F401
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+
     # Heuristic shouldn't strip too much
     # "kiler" ends with "ler" but "ki" is too short (<=2 chars + suffix len?)
     # implementation has > suffix.len() + 2

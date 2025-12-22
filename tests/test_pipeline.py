@@ -3,6 +3,7 @@ import pytest
 from durak.normalizer import Normalizer
 from durak.pipeline import Pipeline
 
+
 def test_normalizer_importable():
     norm = Normalizer()
     assert norm is not None

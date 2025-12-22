@@ -20,7 +20,9 @@ def main() -> None:
     output_clean_text.write_text(cleaned_text, encoding="utf-8")
     
     processed_tokens = process_text(original_text, remove_stopwords=True)
-    otuput_processed_tokens = Path(__file__).parent / ".." / "tmp" / "output_tokens.json"
+    otuput_processed_tokens = (
+        Path(__file__).parent / ".." / "tmp" / "output_tokens.json"
+    )
     with otuput_processed_tokens.open("w", encoding="utf-8") as f:
         json.dump(processed_tokens, f, ensure_ascii=False, indent=4)
     print(f"\nİşlenmiş token'lar '{otuput_processed_tokens}' dosyasına kaydedildi.")
