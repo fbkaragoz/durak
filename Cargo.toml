@@ -1,0 +1,11 @@
+[package]
+name = "_durak_core"
+version = "0.2.4"
+edition = "2021"
+
+[lib]
+name = "_durak_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23.3", features = ["extension-module"] }
