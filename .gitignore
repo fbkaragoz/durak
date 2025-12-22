@@ -3,11 +3,17 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
+build/
+dist/
+*.so
+*.dylib
+
+# Rust artifacts
+target/
 
 # Installer caches
 .cache/
 .pytest_cache/
-dist/
 .mypy_cache/
 
 # reports
@@ -19,9 +25,4 @@ htmlcov/
 .claude/
 
 # temporary files
-tmp/*.txt
-tmp/*.json
-tmp/*.jsonl
-tmp/*.csv
-tmp/*.log
-tmp/*.db
+tmp/

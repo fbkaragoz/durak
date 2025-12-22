@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "durak-nlp"
@@ -9,7 +9,7 @@ description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "Fatih Burak Karagöz" }]
-license = "LicenseRef-Durak-1.2"
+license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["turkish nlp", "text processing", "preprocessing", "lemmatization", "tokenization"]
 dependencies = []

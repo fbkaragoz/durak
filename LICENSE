@@ -1,70 +1,21 @@
-Durak Non-Commercial Open Source License  
-Version 1.2, 29 October 2025  
+MIT License
 
-Copyright © 2025 Fatih Burak Karagöz. All rights reserved.
+Copyright (c) 2025 Fatih Burak Karagöz
 
-1. Grant of License  
-   Subject to the terms and conditions of this License, the Copyright Holder hereby grants to every **Individual** (as defined below) a worldwide, royalty-free, non-exclusive, non-transferable, non-sublicensable license to:  
-   (a) use, copy, modify, merge, publish, and distribute the Software and Derivative Works thereof; and  
-   (b) prepare Derivative Works of the Software,  
-   **solely for Non-Commercial Purposes**.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-2. Definitions  
-   “Individual” means a natural person acting in a personal capacity or for educational, artistic, or independent academic research purposes, and **not** on behalf of or under direction of any Entity.  
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-   “Entity” means any corporation, limited liability company, partnership, joint venture, governmental authority, non-profit organization, or other organization (whether for-profit or not-for-profit).  
-
-   “Non-Commercial Purposes” means use that does not directly or indirectly generate revenue, provide paid services, or support the business operations of any Entity. Academic publication fees, conference registration fees, or nominal cost-recovery charges by non-profit educational institutions are not considered commercial.
-
-   “Software” means the source code, object code, documentation, and associated materials provided under this License.  
-
-   “Derivative Work” means any work (including forks, modifications, or extensions) that is based on or incorporates all or a portion of the Software.
-
-3. Non-Commercial Restriction  
-   The license granted in Section 1 is **expressly conditioned** on the licensee’s use being limited to Non-Commercial Purposes. Any use by or on behalf of an Entity, or any use that facilitates commercial activity (including but not limited to integration into a paid product, SaaS offering, internal business workflow, or monetized research), is **prohibited** unless the Copyright Holder grants separate written permission.
-
-4. Copyleft & License Preservation  
-   4.1 Any Derivative Work must be distributed **exclusively** under this exact License (version 1.2 or later if the Copyright Holder publishes an update and the licensee elects to adopt it).  
-   4.2 The full text of this License must be included in every copy or substantial portion of the Software or Derivative Work.  
-   4.3 Licensees may not impose any additional terms that weaken, override, or remove the restrictions in Sections 1 or 3.
-
-5. Attribution  
-   Every public distribution of the Software or a Derivative Work must:  
-   (a) retain all copyright, patent, trademark, and attribution notices;
-   
-   (b) prominently display the following **exact** notice:
-        ```
-        Original work: Copyright © 2025 Fatih Burak Karagöz
-        Repository: https://github.com/fbkaragoz/durak
-        Licensed under the Durak Non-Commercial Open Source License v1.2
-        ```
-6. Academic & Research Acknowledgment  
-If the Software or a Derivative Work is used in any academic publication, dataset, or research output, the licensee must include a citation substantially in the following form:
- `Karagöz, F. B. (2025). Durak NLP: Turkish Natural Language Processing Toolkit. Durak Non-Commercial Open Source License v1.2.`
- `https://github.com/fbkaragoz/durak`
-
-
-7. Commercial Licensing  
-Entities requiring a commercial license may request one by written notice to the Copyright Holder. Silence or failure to respond does **not** constitute permission.
-
-8. No Warranty; Limitation of Liability  
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-9. Termination  
-9.1 This License terminates automatically upon any breach of its terms.  
-9.2 Upon termination, all rights granted cease immediately, and the licensee must destroy or cease using all copies of the Software and Derivative Works.
-
-10. Miscellaneous  
- 10.1 This License is governed by the laws of the Republic of Türkiye.  
- 10.2 If any provision is held invalid, the remainder remains in full force.  
- 10.3 The Copyright Holder may publish revised versions of this License. Unless the licensee explicitly adopts a newer version, this version 1.2 governs.
-
-## SPDX License Expression
-This license is identified in the SPDX License List as `LicenseRef-Durak-NonCommercial-1.2`.  
-The full text is included in this file and at:  
-https://github.com/fbkaragoz/durak/blob/main/LICENSE
-
-
----  
-
-**END OF LICENSE**
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
