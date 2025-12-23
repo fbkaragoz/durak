@@ -108,7 +108,7 @@ def main():
     print("-" * 70)
 
     pipeline = durak.Pipeline(
-        clean=True, tokenize=True, remove_stopwords=True, normalize=True
+        ["clean", "tokenize", "remove_stopwords", "normalize"]
     )
 
     pipeline_time = benchmark(pipeline, large_text, iterations=100)
