@@ -72,6 +72,6 @@ except metadata.PackageNotFoundError:  # pragma: no cover - fallback during dev 
 
 # Import Rust extension - gracefully degrade if not available
 try:
-    from . import _durak_core  # type: ignore[attr-defined]
+    from . import _durak_core
 except ImportError:
-    _durak_core = None
+    _durak_core = None  # type: ignore[assignment]

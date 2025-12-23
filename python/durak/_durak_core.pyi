@@ -29,8 +29,9 @@ def fast_normalize(text: str) -> str:
 def tokenize_with_offsets(text: str) -> list[tuple[str, int, int]]:
     """Tokenize text and return tokens with their character offsets.
 
-    Returns tokens along with their start and end character positions in the original text.
-    Offsets are character indices (not byte indices) for Python compatibility.
+    Returns tokens along with their start and end character positions in the
+    original text. Offsets are character indices (not byte indices) for Python
+    compatibility.
 
     Handles:
     - URLs (http://, https://, www.)
@@ -44,7 +45,8 @@ def tokenize_with_offsets(text: str) -> list[tuple[str, int, int]]:
         text: The text to tokenize
 
     Returns:
-        List of (token, start_index, end_index) tuples where indices are character positions
+        List of (token, start_index, end_index) tuples where indices are
+        character positions
 
     Examples:
         >>> tokenize_with_offsets("Merhaba dünya!")

@@ -23,7 +23,8 @@ def _load_detached_suffixes() -> tuple[str, ...]:
             return tuple(line.strip() for line in handle if line.strip())
     except FileNotFoundError as exc:
         raise RuntimeError(
-            f"durak data file DETACHED_SUFFIXES.txt is missing from {resource_path.parent}."
+            f"durak data file DETACHED_SUFFIXES.txt is missing from "
+            f"{resource_path.parent}."
         ) from exc
 
 

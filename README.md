@@ -12,14 +12,14 @@
 
 **Durak** is a high-performance Turkish NLP toolkit built on a **"Rust Core, Python Interface"** architecture. Heavy lifting (normalization, tokenization, lemmatization) runs in compiled Rust, releasing the GIL for true parallelism, while providing a flexible, PyTorch-like API for Python researchers.
 
-## ✨ Key Features
+## Why Durak?
 
-- **🦀 Rust-Powered Core**: Blazing fast text processing with zero-overhead resource embedding
-- **🔓 True Parallelism**: GIL-released operations for multi-core batch processing
-- **📦 Zero-Dependency Distribution**: Resources compiled directly into binary
-- **🎯 Research-Ready**: Type-safe, reproducible, easy to integrate
+- **Rust-Powered**: Blazing fast text processing with zero-overhead resource embedding
+- **True Parallelism**: GIL-released operations for multi-core batch processing
+- **Zero-Dependency Distribution**: Resources compiled directly into binary
+- **Research-Ready**: Type-safe, reproducible, easy to integrate
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌──────────────────────────────────────┐
@@ -34,7 +34,7 @@
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design documentation.
 
-## 🚀 Quickstart
+## Quickstart
 
 ### Installation
 
@@ -108,7 +108,7 @@ stopwords = _durak_core.get_stopwords_base()  # 100-1000x faster loading
 suffixes = _durak_core.get_detached_suffixes()
 ```
 
-## 📚 Features
+## Features
 
 - **Unicode-aware cleaning**: Turkish-specific normalization (İ/ı, I/i handling)
 - **Configurable stopword management**: Keep-lists, custom additions, domain-specific sets
@@ -117,7 +117,7 @@ suffixes = _durak_core.get_detached_suffixes()
 - **Embedded resources**: Zero file I/O, compiled directly into binary
 - **Type-safe**: Complete `.pyi` stubs for IDE support and static analysis
 
-## 🛠️ Development Setup
+## Development Setup
 
 ### Building from Source
 
@@ -173,7 +173,7 @@ durak/
 └── docs/                 # Documentation
 ```
 
-## 📖 Documentation
+## Documentation
 
 - **[Architecture Guide](ARCHITECTURE.md)**: Design principles and component architecture
 - **[Examples](examples/)**: Basic and advanced usage demonstrations
@@ -182,7 +182,7 @@ durak/
 - **[Changelog](CHANGELOG.md)**: Version history and migration guides
 - **[Roadmap](ROADMAP.md)**: Future enhancements and planned features
 
-## 🤝 Community & Support
+## Community & Support
 
 - **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -192,7 +192,7 @@ durak/
 
 **Topics**: `turkish-nlp`, `nlp`, `rust`, `pyo3`, `maturin`, `tokenization`, `lemmatization`, `text-processing`
 
-## 📊 Performance
+## Performance
 
 Rust-accelerated functions provide significant speedups:
 
@@ -203,7 +203,7 @@ Rust-accelerated functions provide significant speedups:
 
 Run `python benchmarks/benchmark_rust_vs_python.py` to measure on your system.
 
-## 📄 License
+## License
 
 Durak is distributed under the [Durak License v1.2](LICENSE). Commercial or institutional use requires explicit written permission from the author.
 
