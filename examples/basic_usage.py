@@ -40,13 +40,7 @@ def main():
 
     # 5. Using the Pipeline
     print("\n5. Using the Pipeline")
-    pipeline = durak.Pipeline(
-        clean=True,
-        tokenize=True,
-        remove_stopwords=True,
-        normalize=True,
-    )
-    result = pipeline(text)
+    result = durak.process_text(text)
     print(f"Pipeline result: {result}")
 
     # 6. Accessing embedded Rust resources (if Rust extension is available)
