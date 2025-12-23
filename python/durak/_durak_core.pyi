@@ -94,9 +94,82 @@ def strip_suffixes(word: str) -> str:
     """
     ...
 
+def get_detached_suffixes() -> list[str]:
+    """Get embedded detached suffixes list.
+
+    Returns the list of Turkish detached suffixes compiled into the binary
+    from resources/tr/labels/DETACHED_SUFFIXES.txt at build time.
+
+    Returns:
+        List of detached suffix strings
+
+    Examples:
+        >>> suffixes = get_detached_suffixes()
+        >>> 'da' in suffixes
+        True
+        >>> 'de' in suffixes
+        True
+    """
+    ...
+
+def get_stopwords_base() -> list[str]:
+    """Get embedded Turkish base stopwords list.
+
+    Returns the base Turkish stopwords compiled into the binary
+    from resources/tr/stopwords/base/turkish.txt at build time.
+
+    Returns:
+        List of Turkish stopwords
+
+    Examples:
+        >>> stopwords = get_stopwords_base()
+        >>> 've' in stopwords
+        True
+        >>> 'ama' in stopwords
+        True
+    """
+    ...
+
+def get_stopwords_metadata() -> str:
+    """Get embedded stopwords metadata JSON.
+
+    Returns the stopwords metadata JSON compiled into the binary
+    from resources/tr/stopwords/metadata.json at build time.
+
+    Returns:
+        JSON string containing stopword metadata
+
+    Examples:
+        >>> import json
+        >>> metadata = json.loads(get_stopwords_metadata())
+        >>> 'sets' in metadata
+        True
+    """
+    ...
+
+def get_stopwords_social_media() -> list[str]:
+    """Get embedded social media stopwords.
+
+    Returns the social media domain-specific stopwords compiled into the binary
+    from resources/tr/stopwords/domains/social_media.txt at build time.
+
+    Returns:
+        List of social media stopwords
+
+    Examples:
+        >>> sm_stopwords = get_stopwords_social_media()
+        >>> len(sm_stopwords) > 0
+        True
+    """
+    ...
+
 __all__ = [
     "fast_normalize",
     "tokenize_with_offsets",
     "lookup_lemma",
     "strip_suffixes",
+    "get_detached_suffixes",
+    "get_stopwords_base",
+    "get_stopwords_metadata",
+    "get_stopwords_social_media",
 ]
