@@ -5,7 +5,6 @@ and Rust-accelerated functions.
 """
 
 import time
-from pathlib import Path
 
 
 def benchmark(func, *args, iterations=10000):

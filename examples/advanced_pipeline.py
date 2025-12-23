@@ -4,8 +4,15 @@ Demonstrates creating custom text processing pipelines with
 domain-specific stopwords, suffix attachment, and lemmatization.
 """
 
-import durak
-from durak import StopwordManager
+from durak import (
+    StopwordManager,
+    attach_detached_suffixes,
+    clean_text,
+    load_stopword_resource,
+    load_stopword_resources,
+    normalize_case,
+    tokenize,
+)
 
 
 def main():
@@ -31,7 +38,7 @@ def main():
         keep=["var", "git"],  # Keep these even if they're stopwords
     )
 
-    tokens = durak.tokenize(durak.clean_text(text))
+    tokens = tokenize(clean_text(text))
     print(f"Tokens: {tokens}")
 
     filtered = [t for t in tokens if not stopword_mgr.is_stopword(t)]
@@ -43,11 +50,11 @@ def main():
 
     # Tokenize preserving apostrophes
     text_with_suffixes = "Ankara'da İstanbul'dan geldi"
-    tokens_raw = durak.tokenize(text_with_suffixes)
+    tokens_raw = tokenize(text_with_suffixes)
     print(f"Raw tokens: {tokens_raw}")
 
     # Attach detached suffixes
-    attached = durak.attach_detached_suffixes(tokens_raw)
+    attached = attach_detached_suffixes(tokens_raw)
     print(f"With attached suffixes: {attached}")
 
     # 3. Custom Pipeline
@@ -76,17 +83,17 @@ def main():
         def __call__(self, text):
             """Process text through the pipeline."""
             # Clean and normalize
-            processed = durak.clean_text(text)
+            processed = clean_text(text)
 
             if self.normalize:
-                processed = durak.normalize_case(processed)
+                processed = normalize_case(processed)
 
             # Tokenize
-            tokens = durak.tokenize(processed)
+            tokens = tokenize(processed)
 
             # Attach suffixes
             if self.attach_suffixes:
-                tokens = durak.attach_detached_suffixes(tokens)
+                tokens = attach_detached_suffixes(tokens)
 
             # Remove stopwords
             if self.remove_stopwords:
@@ -119,11 +126,11 @@ def main():
         print("Rust extension not available")
 
     # Load from file resources (traditional)
-    file_stopwords = durak.load_stopword_resource("base/turkish")
+    file_stopwords = load_stopword_resource("base/turkish")
     print(f"Loaded {len(file_stopwords)} stopwords from file")
 
     # Load multiple resources
-    combined = durak.load_stopword_resources(["base/turkish", "domains/social_media"])
+    combined = load_stopword_resources(["base/turkish", "domains/social_media"])
     print(f"Combined {len(combined)} stopwords from multiple sources")
 
     print("\n" + "=" * 60)
