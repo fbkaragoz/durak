@@ -35,7 +35,7 @@ Documentation = "https://github.com/fbkaragoz/durak#readme"
 Changelog = "https://github.com/fbkaragoz/durak/blob/main/CHANGELOG.md"
 
 [tool.maturin]
-python-source = "src"
+python-source = "python"
 module-name = "durak._durak_core"
 
 [project.optional-dependencies]
@@ -60,7 +60,7 @@ lint.ignore = ["B905"]  # allow zip without strict length checks
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
-pythonpath = "src"
+pythonpath = "python"
 
 [tool.coverage.run]
 branch = true
