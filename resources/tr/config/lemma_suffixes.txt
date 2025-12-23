@@ -1,0 +1,63 @@
+# Turkish Lemmatization Suffixes
+# Common suffixes used for heuristic suffix stripping in lemmatization
+#
+# WARNING: This is a simplified list for demonstration purposes.
+# Production lemmatization should use:
+#   1. Dictionary lookup (Tier 1)
+#   2. Rule-based morphological analysis with vowel harmony (Tier 2)
+#   3. Machine learning models (Tier 3)
+#
+# Format: One suffix per line
+# Order: More specific (longer) suffixes should be processed first
+#
+# Plural/Possessive
+lar
+ler
+
+# Genitive case
+nin
+nın
+nun
+nün
+
+# Ablative case
+den
+dan
+ten
+tan
+
+# Locative case
+de
+da
+te
+ta
+
+# Dative case
+ye
+ya
+
+# Accusative case
+yi
+yı
+yu
+yü
+
+# Past tense (simplified)
+du
+dü
+di
+dı
+
+# Present continuous (simplified)
+yor
+iyor
+uyor
+üyor
+
+# Future tense
+ecek
+acak
+
+# Common verb suffixes (simplified - order matters!)
+# Note: Full Turkish morphology is much more complex
+# This is a minimal set for basic demonstration

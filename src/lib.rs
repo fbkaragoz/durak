@@ -3,8 +3,17 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 use regex::Regex;
 
+// Embedded resources using include_str! for zero-overhead loading
+// Resources are compiled directly into the binary at build time
+static DETACHED_SUFFIXES_DATA: &str = include_str!("../resources/tr/labels/DETACHED_SUFFIXES.txt");
+static STOPWORDS_TR_DATA: &str = include_str!("../resources/tr/stopwords/base/turkish.txt");
+static STOPWORDS_METADATA_DATA: &str = include_str!("../resources/tr/stopwords/metadata.json");
+static STOPWORDS_SOCIAL_MEDIA_DATA: &str = include_str!("../resources/tr/stopwords/domains/social_media.txt");
+
 static LEMMA_DICT: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
 static TOKEN_REGEX: OnceLock<Regex> = OnceLock::new();
+static DETACHED_SUFFIXES: OnceLock<Vec<&'static str>> = OnceLock::new();
+static STOPWORDS_BASE: OnceLock<Vec<&'static str>> = OnceLock::new();
 
 fn get_lemma_dict() -> &'static HashMap<&'static str, &'static str> {
     LEMMA_DICT.get_or_init(|| {
@@ -113,12 +122,70 @@ fn strip_suffixes(word: &str) -> String {
     current
 }
 
+/// Get embedded detached suffixes list
+/// Returns suffixes compiled into the binary from resources/tr/labels/DETACHED_SUFFIXES.txt
+#[pyfunction]
+fn get_detached_suffixes() -> Vec<String> {
+    let suffixes = DETACHED_SUFFIXES.get_or_init(|| {
+        DETACHED_SUFFIXES_DATA
+            .lines()
+            .map(|line| line.trim())
+            .filter(|line| !line.is_empty())
+            .collect()
+    });
+    suffixes.iter().map(|s| s.to_string()).collect()
+}
+
+/// Get embedded Turkish stopwords list
+/// Returns base Turkish stopwords compiled into the binary from resources/tr/stopwords/base/turkish.txt
+#[pyfunction]
+fn get_stopwords_base() -> Vec<String> {
+    let stopwords = STOPWORDS_BASE.get_or_init(|| {
+        STOPWORDS_TR_DATA
+            .lines()
+            .map(|line| line.trim())
+            .filter(|line| !line.is_empty() && !line.starts_with('#'))
+            .collect()
+    });
+    stopwords.iter().map(|s| s.to_string()).collect()
+}
+
+/// Get embedded stopwords metadata JSON
+/// Returns metadata compiled into the binary from resources/tr/stopwords/metadata.json
+#[pyfunction]
+fn get_stopwords_metadata() -> String {
+    STOPWORDS_METADATA_DATA.to_string()
+}
+
+/// Get embedded social media stopwords
+/// Returns social media stopwords compiled into the binary from resources/tr/stopwords/domains/social_media.txt
+#[pyfunction]
+fn get_stopwords_social_media() -> Vec<String> {
+    STOPWORDS_SOCIAL_MEDIA_DATA
+        .lines()
+        .map(|line| line.trim())
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(|s| s.to_string())
+        .collect()
+}
+
 /// The internal Rust part of the Durak library.
+/// High-performance Turkish NLP operations with embedded resources.
 #[pymodule]
 fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+    // Core text processing functions
     m.add_function(wrap_pyfunction!(fast_normalize, m)?)?;
+    m.add_function(wrap_pyfunction!(tokenize_with_offsets, m)?)?;
+
+    // Lemmatization functions
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
     m.add_function(wrap_pyfunction!(strip_suffixes, m)?)?;
-    m.add_function(wrap_pyfunction!(tokenize_with_offsets, m)?)?;
+
+    // Embedded resource accessors
+    m.add_function(wrap_pyfunction!(get_detached_suffixes, m)?)?;
+    m.add_function(wrap_pyfunction!(get_stopwords_base, m)?)?;
+    m.add_function(wrap_pyfunction!(get_stopwords_metadata, m)?)?;
+    m.add_function(wrap_pyfunction!(get_stopwords_social_media, m)?)?;
+
     Ok(())
 }

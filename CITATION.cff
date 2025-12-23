@@ -5,14 +5,15 @@ abstract: "Durak provides modular text preprocessing utilities tailored for Turk
 authors:
   - family-names: Karagöz
     given-names: Fatih Burak
+    email: dev@karagoz.io
     affiliation: "Independent Researcher"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.17477942"
   - type: url
     value: "https://github.com/fbkaragoz/durak"
-version: "0.2.2"
-date-released: 2025-10-29
+version: "0.4.0"
+date-released: 2025-01-15
 repository-code: "https://github.com/fbkaragoz/durak"
 license: "LicenseRef-Durak-NonCommercial-1.2"
 keywords:
@@ -27,7 +28,8 @@ preferred-citation:
   authors:
     - family-names: Karagöz
       given-names: Fatih Burak
+      email: dev@karagoz.io
   doi: "10.5281/zenodo.17477942"
   url: "https://github.com/fbkaragoz/durak"
-  version: "v0.2.2"
-  date-released: 2025-10-29
+  version: "v0.4.0"
+  date-released: 2025-01-15

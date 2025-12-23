@@ -31,7 +31,7 @@ This Code applies within project spaces and in public spaces when an individual 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by contacting the maintainers at `conduct@karagoz.io`. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by contacting the maintainers at `dev@karagoz.io`. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Enforcement Guidelines
 

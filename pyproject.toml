@@ -4,11 +4,11 @@ build-backend = "maturin"
 
 [project]
 name = "durak-nlp"
-version = "0.3.0"
+version = "0.4.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
-authors = [{ name = "Fatih Burak Karagöz" }]
+authors = [{ name = "Fatih Burak Karagöz", email = "dev@karagoz.io" }]
 license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["turkish nlp", "text processing", "preprocessing", "lemmatization", "tokenization"]
@@ -35,7 +35,7 @@ Documentation = "https://github.com/fbkaragoz/durak#readme"
 Changelog = "https://github.com/fbkaragoz/durak/blob/main/CHANGELOG.md"
 
 [tool.maturin]
-python-source = "src"
+python-source = "python"
 module-name = "durak._durak_core"
 
 [project.optional-dependencies]
@@ -43,6 +43,7 @@ dev = [
     "black>=24.0.0",
     "ruff>=0.3.0",
     "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
     "coverage[toml]>=7.0.0",
     "mypy>=1.0.0",
 ]
@@ -60,7 +61,7 @@ lint.ignore = ["B905"]  # allow zip without strict length checks
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
-pythonpath = "src"
+pythonpath = "python"
 
 [tool.coverage.run]
 branch = true
