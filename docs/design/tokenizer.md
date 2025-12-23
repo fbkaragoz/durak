@@ -35,7 +35,7 @@ The core tokenization logic is implemented in Rust (`src/lib.rs`) for performanc
 ## Testing Considerations
 
 - Validate tokens from sample sentences keep diacritics and suffixal particles.
-- Integration with `tests/data/corpus_validator` to ensure tokenization maintains prior invariants.
+- Integration tests using the corpus validator suite to ensure tokenization maintains prior invariants.
 - Regression cases for:
   - Apostrophe-separated suffixes (`Türkiye'ye`, `FB'li`).
   - Hyphenated compounds (`kapı-kilit`, numeric ranges).
