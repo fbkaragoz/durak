@@ -2,13 +2,13 @@
 
 ## Supported Versions
 
-Durak is currently in alpha (`0.1.x`). Security patches will be applied to the latest release only.
+Durak is currently in alpha (`0.x.x`). Security patches will be applied to the latest release only.
 
 ## Reporting a Vulnerability
 
 Please do **not** open public GitHub issues for security concerns. Instead:
 
-1. Email `security@karagoz.io` with:
+1. Email `dev@karagoz.io` with:
    - A detailed description of the vulnerability.
    - Steps to reproduce or proof-of-concept.
    - Any potential impact or mitigations.

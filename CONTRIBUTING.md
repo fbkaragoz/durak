@@ -47,6 +47,6 @@ Durak follows the standards in [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). By pa
 
 - Search existing issues before opening a new one.
 - Provide clear reproduction steps, environment details, and expected vs. actual behaviour.
-- For security-sensitive reports, please email `security@karagoz.io` instead of opening a public issue.
+- For security-sensitive reports, please email `dev@karagoz.io` instead of opening a public issue.
 
 We appreciate your contributions and look forward to collaborating!*** End Patch
