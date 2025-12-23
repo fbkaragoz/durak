@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for trusted publishing
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,18 +19,21 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Install build tooling
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build twine .[dev]
+          python -m pip install maturin twine .[dev]
 
       - name: Run tests
         run: pytest
 
-      - name: Build package
-        run: python -m build
+      - name: Build wheels with maturin
+        run: maturin build --release
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.10.0
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: target/wheels/

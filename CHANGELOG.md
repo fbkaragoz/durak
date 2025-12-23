@@ -6,6 +6,26 @@ All notable changes to Durak will be documented here. This project adheres to [S
 
 - Planned enhancements to lemmatization adapters and pipeline orchestration.
 
+## [0.3.0] - 2025-12-23
+
+### Added
+- **Rust Core Engine ("Iron Core")**: Migrated performance-critical linguistic logic to Rust via PyO3/Maturin for significant speed improvements.
+- **`Pipeline` class**: A modular, PyTorch-style component chaining system for building custom NLP pipelines.
+- **`Normalizer` class**: Rust-backed Turkish text normalization with proper handling of İ/ı case transformations.
+- **`Lemmatizer` class**: Multi-tier lemmatization with dictionary lookup and heuristic suffix stripping strategies.
+- **`tokenize_with_offsets()`**: Character-accurate offset mapping for NER and span-based tasks.
+- **Improved Tokenizer**: Rust-backed regex tokenization with configurable punctuation handling.
+
+### Changed
+- **License**: Switched to MIT license for broader compatibility.
+- **Build System**: Now uses Maturin for building Rust+Python hybrid packages.
+- **CI/CD**: Updated GitHub Actions workflows with proper Rust toolchain support and trusted publishing.
+
+### Fixed
+- Fixed GitHub Actions workflow using incorrect action name (`rust-action` → `rust-toolchain`).
+- Fixed line-too-long linting errors in suffix handling.
+- Fixed mypy type errors for optional Rust extension imports.
+
 ## [0.2.4] - 2025-10-30
 
 ### Fixed
@@ -50,8 +70,10 @@ All notable changes to Durak will be documented here. This project adheres to [S
 - Introduced regex-based tokenizer, sentence splitting, and corpus validator integration.
 - Provided development tooling (pytest, ruff, mypy configs) and packaging metadata for TestPyPI/PyPI releases.
 
-[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/fbkaragoz/durak/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/fbkaragoz/durak/compare/v0.2.4...v0.3.0
 [0.2.4]: https://github.com/fbkaragoz/durak/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/fbkaragoz/durak/compare/v0.2.2...v0.2.3
 [0.2.0]: https://github.com/fbkaragoz/durak/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fbkaragoz/durak/releases/tag/v0.1.0
+
