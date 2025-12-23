@@ -32,7 +32,7 @@
 └──────────────────────────────────────┘
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design documentation.
+See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed design documentation.
 
 ## Quickstart
 
@@ -175,12 +175,12 @@ durak/
 
 ## Documentation
 
-- **[Architecture Guide](ARCHITECTURE.md)**: Design principles and component architecture
+- **[Architecture Guide](docs/ARCHITECTURE.md)**: Design principles and component architecture
 - **[Examples](examples/)**: Basic and advanced usage demonstrations
 - **[Benchmarks](benchmarks/)**: Performance comparison and optimization tips
 - **[API Design Docs](docs/design/)**: Detailed component specifications
 - **[Changelog](CHANGELOG.md)**: Version history and migration guides
-- **[Roadmap](ROADMAP.md)**: Future enhancements and planned features
+- **[Roadmap](docs/ROADMAP.md)**: Future enhancements and planned features
 
 ## Community & Support
 

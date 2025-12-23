@@ -383,12 +383,12 @@ def process_user_text(text: str) -> list[str]:
     return durak.process_text(text, remove_stopwords=True)
 ```
 
-## 📚 Further Reading
+## Further Reading
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System design and component architecture
-- [examples/](examples/) - Working code examples
-- [benchmarks/](benchmarks/) - Performance measurement tools
-- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute improvements
+- [examples/](../examples/) - Working code examples
+- [benchmarks/](../benchmarks/) - Performance measurement tools
+- [CONTRIBUTING.md](../CONTRIBUTING.md) - How to contribute improvements
 
 ---
 
