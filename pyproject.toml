@@ -8,7 +8,7 @@ version = "0.4.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
-authors = [{ name = "Fatih Burak Karagöz" }]
+authors = [{ name = "Fatih Burak Karagöz", email = "dev@karagoz.io" }]
 license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["turkish nlp", "text processing", "preprocessing", "lemmatization", "tokenization"]
