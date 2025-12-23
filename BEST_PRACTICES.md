@@ -189,13 +189,13 @@ stripped = _durak_core.strip_suffixes("kitaplardan")  # "kitap"
 # Option 3: Stanza Turkish model
 
 # Then integrate with Durak pipeline:
-from durak import Pipeline
+from durak import Pipeline, clean_text, tokenize, remove_stopwords
 
 pipeline = Pipeline([
-    lambda text: durak.clean_text(text),
-    lambda text: durak.tokenize(text),
+    lambda text: clean_text(text),
+    lambda text: tokenize(text),
     lambda tokens: your_lemmatizer.lemmatize(tokens),  # External tool
-    lambda tokens: durak.remove_stopwords(tokens),
+    lambda tokens: remove_stopwords(tokens),
 ])
 ```
 
