@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "durak-nlp"
-version = "0.3.0"
+version = "0.4.0"
 description = "Durak: modular Turkish NLP preprocessing toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
