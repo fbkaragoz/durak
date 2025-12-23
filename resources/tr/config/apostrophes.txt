@@ -1,0 +1,12 @@
+# Turkish Apostrophe Characters
+# Used for detached suffix recognition (e.g., "Ankara'da")
+#
+# These characters are recognized as apostrophes when separating
+# proper nouns from their suffixes in Turkish text.
+#
+# Examples:
+#   - Ankara'da (straight apostrophe)
+#   - İstanbul'a (curly apostrophe)
+
+'
+'
