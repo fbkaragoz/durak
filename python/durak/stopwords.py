@@ -11,7 +11,8 @@ from typing import Any, cast
 
 from durak.cleaning import normalize_case
 
-STOPWORD_DATA_DIR = Path(__file__).resolve().parent / "data" / "stopwords"
+# Resource directory is now at project root: resources/tr/stopwords
+STOPWORD_DATA_DIR = Path(__file__).resolve().parent.parent.parent / "resources" / "tr" / "stopwords"
 DEFAULT_STOPWORD_RESOURCE = "base/turkish"
 STOPWORD_METADATA_PATH = STOPWORD_DATA_DIR / "metadata.json"
 

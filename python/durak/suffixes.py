@@ -3,25 +3,27 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
-from importlib import resources
+from pathlib import Path
 
-APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "’")
+APOSTROPHE_TOKENS: tuple[str, ...] = ("'", "'")
 
 
 def _load_detached_suffixes() -> tuple[str, ...]:
-    """Load the detached suffix list from the data directory."""
-    resource = (
-        resources.files("durak")
-        .joinpath("data")
-        .joinpath("labels")
-        .joinpath("DETACHED_SUFFIXES.txt")
+    """Load the detached suffix list from the resource directory."""
+    # Resource directory is now at project root: resources/tr/labels
+    resource_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "resources"
+        / "tr"
+        / "labels"
+        / "DETACHED_SUFFIXES.txt"
     )
     try:
-        with resource.open(encoding="utf-8") as handle:
+        with resource_path.open(encoding="utf-8") as handle:
             return tuple(line.strip() for line in handle if line.strip())
     except FileNotFoundError as exc:
         raise RuntimeError(
-            "durak data file DETACHED_SUFFIXES.txt is missing from data/labels."
+            f"durak data file DETACHED_SUFFIXES.txt is missing from {resource_path.parent}."
         ) from exc
 
 
