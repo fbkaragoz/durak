@@ -68,7 +68,7 @@ __all__ = [
 try:
     __version__ = metadata.version("durak-nlp")
 except metadata.PackageNotFoundError:  # pragma: no cover - fallback during dev installs
-    __version__ = "0.3.0"
+    __version__ = "0.4.0"
 
 # Import Rust extension - gracefully degrade if not available
 try:
