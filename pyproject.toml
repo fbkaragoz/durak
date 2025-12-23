@@ -34,14 +34,9 @@ Issues = "https://github.com/fbkaragoz/durak/issues"
 Documentation = "https://github.com/fbkaragoz/durak#readme"
 Changelog = "https://github.com/fbkaragoz/durak/blob/main/CHANGELOG.md"
 
-[tool.setuptools]
-package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-durak = ["py.typed", "data/stopwords/**/*.txt", "data/stopwords/**/*.json"]
+[tool.maturin]
+python-source = "src"
+module-name = "durak._durak_core"
 
 [project.optional-dependencies]
 dev = [
