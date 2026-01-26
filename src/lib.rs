@@ -43,15 +43,34 @@ fn get_token_regex() -> &'static Regex {
 }
 
 /// Fast normalization for Turkish text.
-/// Handles I/ı and İ/i conversion correctly and lowercases the rest.
+/// Handles I/ı and İ/i conversion correctly and optionally lowercases the rest.
+/// 
+/// # Arguments
+/// * `text` - Input text to normalize
+/// * `lowercase` - If true, convert text to lowercase
+/// * `handle_turkish_i` - If true, handle Turkish İ/I conversion (İ→i, I→ı)
 #[pyfunction]
-fn fast_normalize(text: &str) -> String {
+fn fast_normalize(text: &str, lowercase: bool, handle_turkish_i: bool) -> String {
     // Rust handles Turkish I/ı conversion correctly and instantly
     // "Single Pass" allocation for maximum speed
-    text.chars().map(|c| match c {
-        'İ' => 'i',
-        'I' => 'ı',
-        _ => c.to_lowercase().next().unwrap_or(c)
+    text.chars().map(|c| {
+        // First, handle Turkish I/İ conversion if enabled
+        let c = if handle_turkish_i {
+            match c {
+                'İ' => 'i',
+                'I' => 'ı',
+                _ => c
+            }
+        } else {
+            c
+        };
+        
+        // Then, apply lowercasing if enabled
+        if lowercase {
+            c.to_lowercase().next().unwrap_or(c)
+        } else {
+            c
+        }
     }).collect()
 }
 
