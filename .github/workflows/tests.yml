@@ -38,6 +38,9 @@ jobs:
       - name: Run tests with coverage
         run: pytest --cov=durak --cov-report=xml --cov-report=term
 
+      - name: Run property-based tests with statistics
+        run: pytest tests/test_properties.py --hypothesis-show-statistics -v
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         if: matrix.python-version == '3.11'

@@ -50,3 +50,23 @@ Durak follows the standards in [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). By pa
 - For security-sensitive reports, please email `dev@karagoz.io` instead of opening a public issue.
 
 We appreciate your contributions and look forward to collaborating!*** End Patch
+
+## Running Tests
+
+After building the package, run:
+
+```bash
+pytest
+```
+
+### Property-Based Testing
+
+Durak uses [Hypothesis](https://hypothesis.readthedocs.io/) for property-based testing. These tests verify mathematical properties across thousands of randomly generated Turkish text examples.
+
+Run property tests with statistics:
+
+```bash
+pytest tests/test_properties.py --hypothesis-show-statistics -v
+```
+
+See [docs/PROPERTY_TESTING.md](docs/PROPERTY_TESTING.md) for detailed guidance on writing property tests.
