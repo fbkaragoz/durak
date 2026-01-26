@@ -37,6 +37,7 @@ from .tokenizer import (
     tokenize,
     tokenize_text,
     tokenize_with_offsets,
+    tokenize_with_normalized_offsets,
 )
 
 __all__ = [
@@ -71,6 +72,7 @@ __all__ = [
     "tokenize",
     "tokenize_text",
     "tokenize_with_offsets",
+    "tokenize_with_normalized_offsets",
     "Tokenizer",
     "TokenizationError",
 ]
