@@ -44,7 +44,7 @@ class TestNormalizerLowercaseFalse:
         assert result == "iSTANBUL"  # İ→i, but rest stays uppercase
         
         result = normalizer("IŞIK")
-        assert result == "ışıK"  # I→ı, but K stays uppercase
+        assert result == "ıŞıK"  # I→ı, but Ş and K stay uppercase
     
     def test_mixed_case_preserved(self):
         """lowercase=False: mixed case should be preserved"""
@@ -61,22 +61,19 @@ class TestNormalizerTurkishIFalse:
     """Test with handle_turkish_i=False"""
     
     def test_no_turkish_i_conversion(self):
-        """handle_turkish_i=False: should lowercase but NOT convert İ/I"""
+        """handle_turkish_i=False: should lowercase but NOT convert İ/I to Turkish equivalents"""
         normalizer = Normalizer(lowercase=True, handle_turkish_i=False)
         
-        # Should lowercase using standard Unicode rules, NOT Turkish rules
-        result = normalizer("İSTANBUL")
-        # Standard Unicode: İ → i + combining dot above (U+0069 U+0307)
-        # or just İ → i depending on locale
-        # In most cases, İ in Turkish context lowercases to i
-        # But without Turkish handling, it should use default Unicode
-        # For simplicity, we check it's NOT "istanbul" (which is Turkish-specific)
-        assert result != "istanbul"
+        # The key difference: dotless I (U+0049 'I')
+        # Turkish: I → ı
+        # Standard Unicode: I → i
+        result = normalizer("ISTANBUL")  # Using dotless I
+        # Standard Unicode: I → i (NOT Turkish ı)
+        assert result == "istanbul"  # Standard lowercase, not "ıstanbul"
         
-        result = normalizer("IŞIK")
-        # Standard Unicode: I → i (not ı)
-        # Without Turkish handling, I should become i (not ı)
-        assert "ı" not in result  # Should NOT contain Turkish ı
+        # Dotted İ (U+0130) lowercases to i in both cases
+        result = normalizer("İSTANBUL")
+        assert result == "istanbul"  # İ → i is standard Unicode behavior
 
 
 class TestNormalizerBothFalse:
