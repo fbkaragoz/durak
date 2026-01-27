@@ -193,3 +193,122 @@ def test_hybrid_with_comprehensive_dict():
     result = lemmatizer("arabalar")
     # Should strip -lar suffix heuristically
     assert result == "araba"
+
+
+def test_root_validation_lenient():
+    """Test root validation in lenient mode (phonotactic checks only)"""
+    try:
+        from durak import _durak_core  # noqa: F401
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+    
+    lemmatizer = Lemmatizer(
+        strategy="heuristic",
+        validate_roots=True,
+        strict_validation=False,
+        min_root_length=2,
+    )
+    
+    # Should strip valid suffixes resulting in valid roots
+    assert lemmatizer("kitaplar") == "kitap"  # valid root
+    assert lemmatizer("masalar") == "masa"  # valid root
+    
+    # Should prevent over-stripping to invalid roots
+    # "ki" is too short (< min_root_length)
+    result = lemmatizer("kiler")
+    # Should not strip to "ki" (too short)
+    assert len(result) >= 2
+
+
+def test_root_validation_strict():
+    """Test root validation in strict mode (dictionary checking)"""
+    try:
+        from durak import _durak_core  # noqa: F401
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+    
+    lemmatizer = Lemmatizer(
+        strategy="heuristic",
+        validate_roots=True,
+        strict_validation=True,
+        min_root_length=2,
+    )
+    
+    # Known roots in dictionary
+    assert lemmatizer("kitaplar") == "kitap"
+    assert lemmatizer("evler") == "ev"
+    assert lemmatizer("gelmeden") == "gel"
+    
+    # Should not produce unknown roots
+    # (will stop stripping when candidate is not in dictionary)
+    result = lemmatizer("xyzlar")  # nonsense word
+    # In strict mode, should be conservative
+
+
+def test_root_validation_custom_min_length():
+    """Test root validation with custom minimum length"""
+    try:
+        from durak import _durak_core  # noqa: F401
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+    
+    # Require at least 3 characters
+    lemmatizer = Lemmatizer(
+        strategy="heuristic",
+        validate_roots=True,
+        strict_validation=False,
+        min_root_length=3,
+    )
+    
+    # Should preserve words that would become too short
+    result = lemmatizer("kiler")
+    assert len(result) >= 3  # Should not strip to "ki"
+    
+    # Should still strip when result is long enough
+    result = lemmatizer("kitaplar")
+    assert result == "kitap"  # 5 chars, ok
+
+
+def test_root_validation_hybrid():
+    """Test root validation works with hybrid strategy"""
+    try:
+        from durak import _durak_core  # noqa: F401
+    except ImportError:
+        pytest.skip("Rust extension not installed")
+    
+    lemmatizer = Lemmatizer(
+        strategy="hybrid",
+        validate_roots=True,
+        strict_validation=False,
+    )
+    
+    # Dictionary words should still use lookup
+    assert lemmatizer("geliyorum") == "gel"
+    
+    # OOV words should use validated heuristic
+    result = lemmatizer("arabalar")
+    assert result == "araba"
+
+
+def test_lemmatizer_repr_with_validation():
+    """Test __repr__ includes validation parameters"""
+    lemmatizer = Lemmatizer(
+        strategy="hybrid",
+        validate_roots=True,
+        strict_validation=True,
+        min_root_length=3,
+    )
+    
+    repr_str = repr(lemmatizer)
+    assert "strategy='hybrid'" in repr_str
+    assert "validate_roots=True" in repr_str
+    assert "strict_validation=True" in repr_str
+    assert "min_root_length=3" in repr_str
+
+
+def test_lemmatizer_repr_without_validation():
+    """Test __repr__ is concise without validation"""
+    lemmatizer = Lemmatizer(strategy="lookup")
+    
+    repr_str = repr(lemmatizer)
+    assert repr_str == "Lemmatizer(strategy='lookup')"
