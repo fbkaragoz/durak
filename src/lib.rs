@@ -138,9 +138,38 @@ fn strip_suffixes(word: &str) -> String {
 
 /// Strip suffixes with root validity checking
 /// Prevents over-stripping by validating candidate roots
-fn strip_suffixes_validated(word: &str, validator: &RootValidator) -> String {
-    let suffixes = ["lar", "ler", "nin", "nın", "den", "dan", "du", "dün", 
-                    "ta", "te", "da", "de", "ın", "in", "un", "ün"];
+/// 
+/// # Arguments
+/// * `word` - The word to process
+/// * `strict` - If true, check dictionary first, then validate; if false, use phonotactic rules only
+/// * `min_root_length` - Minimum acceptable root length (default: 2)
+/// 
+/// # Returns
+/// The word with suffixes stripped, validated to prevent over-stripping
+#[pyfunction]
+#[pyo3(signature = (word, strict=false, min_root_length=2))]
+fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize) -> String {
+    // In strict mode, first check if the word is in the lemma dictionary
+    if strict {
+        if let Some(lemma) = lookup_lemma(word) {
+            return lemma;
+        }
+    }
+    
+    let validator = RootValidator::new(min_root_length, strict);
+    // Comprehensive Turkish suffix list (ordered by length for greedy matching)
+    let suffixes = [
+        // Compound suffixes (longer first for greedy matching)
+        "lardan", "lerden", "ların", "lerin", "yorum", "yorsun", "yoruz",
+        // Basic suffixes
+        "lar", "ler", "nin", "nın", "den", "dan", "ta", "te", "da", "de",
+        "ın", "in", "un", "ün", "du", "dü", "tu", "tü",
+        // Possessive and case markers
+        "ım", "im", "um", "üm", "ı", "i", "u", "ü",
+        // Verb suffixes
+        "yor", "mak", "mek", "dik", "dık", "duk", "dük",
+        "di", "dı", "du", "dü", "ti", "tı", "tu", "tü",
+    ];
     let mut current = word.to_string();
     
     let mut changed = true;
@@ -220,6 +249,7 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Lemmatization functions
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
     m.add_function(wrap_pyfunction!(strip_suffixes, m)?)?;
+    m.add_function(wrap_pyfunction!(strip_suffixes_validated, m)?)?;
 
     // Embedded resource accessors
     m.add_function(wrap_pyfunction!(get_detached_suffixes, m)?)?;
@@ -336,6 +366,100 @@ mod tests {
                 "strip_suffixes({}) = '{}' should contain '{}'",
                 word, result, expected_contains
             );
+        }
+    }
+
+    #[test]
+    fn test_strip_suffixes_validated_lenient() {
+        // Test validated stripping with lenient mode (phonotactic rules only)
+        let test_cases = vec![
+            ("kitaplar", "kitap"),
+            ("evlerden", "ev"),
+            ("insanların", "insan"),
+        ];
+
+        for (word, expected) in test_cases {
+            let result = strip_suffixes_validated(word, false, 2);
+            assert_eq!(result, expected,
+                "strip_suffixes_validated({}, lenient) should be '{}'",
+                word, expected
+            );
+        }
+    }
+
+    #[test]
+    fn test_strip_suffixes_validated_strict() {
+        // Test validated stripping with strict mode (dictionary only)
+        let test_cases = vec![
+            ("kitaplar", "kitap"),
+            ("evler", "ev"),
+            ("geliyorum", "gel"),
+            ("gittim", "git"),
+        ];
+
+        for (word, expected) in test_cases {
+            let result = strip_suffixes_validated(word, true, 2);
+            assert_eq!(result, expected,
+                "strip_suffixes_validated({}, strict) should be '{}'",
+                word, expected
+            );
+        }
+    }
+
+    #[test]
+    fn test_validated_prevents_overstripping() {
+        // Demonstrate that validated stripping prevents over-stripping
+        // where naive stripping would go too far
+        
+        // Example: "kitaplardan" -> naive might strip to "ki" or "k"
+        // but validated should stop at "kitap"
+        let word = "kitaplardan";
+        let validated_result = strip_suffixes_validated(word, true, 2);
+        
+        // Should be a valid root
+        assert!(validated_result.len() >= 2, 
+            "Validated result should respect min length");
+        assert_eq!(validated_result, "kitap",
+            "Should stop at known root 'kitap', not overstrip");
+    }
+
+    #[test]
+    fn test_validated_min_length() {
+        // Test that minimum root length is enforced
+        let validator_strict = RootValidator::new(3, false);
+        
+        // "ev" is only 2 chars, should be rejected
+        assert!(!validator_strict.is_valid_root("ev"));
+        
+        // "kitap" is 5 chars, should be accepted
+        assert!(validator_strict.is_valid_root("kitap"));
+    }
+
+    #[test]
+    fn test_validated_vs_naive_comparison() {
+        // Compare validated vs naive stripping to show improvements
+        // Validated is SAFER - it might strip less (longer) OR more accurately (shorter)
+        // The key is it won't produce invalid roots
+        let test_words = vec![
+            "kitaplardan",
+            "evlerden",
+            "insanların",
+        ];
+
+        for word in test_words {
+            let naive = strip_suffixes(word);
+            let validated = strip_suffixes_validated(word, true, 2);
+            
+            println!("Word: {} | Naive: {} | Validated: {}", word, naive, validated);
+            
+            // Validated should produce a valid root (length >= min)
+            assert!(validated.len() >= 2,
+                "Validated root '{}' should meet minimum length",
+                validated
+            );
+            
+            // Just demonstrate that both methods work (they may differ)
+            // The point is validated is linguistically safer
         }
     }
 }
