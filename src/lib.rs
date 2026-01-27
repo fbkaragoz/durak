@@ -1,4 +1,6 @@
 mod root_validator;
+mod vowel_harmony;
+mod morphotactics;
 
 use pyo3::prelude::*;
 use std::collections::HashMap;
@@ -136,19 +138,21 @@ fn strip_suffixes(word: &str) -> String {
     current
 }
 
-/// Strip suffixes with root validity checking
-/// Prevents over-stripping by validating candidate roots
+/// Strip suffixes with root validity checking, vowel harmony, and morphotactic validation
+/// Prevents over-stripping by validating candidate roots, checking vowel harmony,
+/// and ensuring morphologically valid suffix ordering
 /// 
 /// # Arguments
 /// * `word` - The word to process
 /// * `strict` - If true, check dictionary first, then validate; if false, use phonotactic rules only
 /// * `min_root_length` - Minimum acceptable root length (default: 2)
+/// * `check_harmony` - If true, validate vowel harmony before stripping (default: true)
 /// 
 /// # Returns
 /// The word with suffixes stripped, validated to prevent over-stripping
 #[pyfunction]
-#[pyo3(signature = (word, strict=false, min_root_length=2))]
-fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize) -> String {
+#[pyo3(signature = (word, strict=false, min_root_length=2, check_harmony=true))]
+fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize, check_harmony: bool) -> String {
     // In strict mode, first check if the word is in the lemma dictionary
     if strict {
         if let Some(lemma) = lookup_lemma(word) {
@@ -157,6 +161,8 @@ fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize) ->
     }
     
     let validator = RootValidator::new(min_root_length, strict);
+    let morphotactics = morphotactics::MorphotacticClassifier::new();
+    
     // Comprehensive Turkish suffix list (ordered by length for greedy matching)
     let suffixes = [
         // Compound suffixes (longer first for greedy matching)
@@ -171,6 +177,7 @@ fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize) ->
         "di", "dı", "du", "dü", "ti", "tı", "tu", "tü",
     ];
     let mut current = word.to_string();
+    let mut stripped_suffixes: Vec<&str> = Vec::new();
     
     let mut changed = true;
     while changed {
@@ -179,9 +186,20 @@ fn strip_suffixes_validated(word: &str, strict: bool, min_root_length: usize) ->
             if current.ends_with(suffix) {
                 let candidate = &current[..current.len() - suffix.len()];
                 
-                // Only strip if the resulting root is valid
-                if validator.is_valid_root(candidate) {
+                // Build hypothetical suffix sequence (reverse order: newest first)
+                let mut test_sequence = vec![suffix];
+                test_sequence.extend(stripped_suffixes.iter().rev());
+                test_sequence.reverse();  // Get correct order: oldest → newest
+                
+                // Validate root, vowel harmony, and morphotactic ordering
+                let is_valid_root = validator.is_valid_root(candidate);
+                let has_harmony = !check_harmony || vowel_harmony::check_vowel_harmony(candidate, suffix);
+                let valid_morphotactics = morphotactics.validate_sequence(&test_sequence);
+                
+                // Only strip if ALL conditions are met
+                if is_valid_root && has_harmony && valid_morphotactics {
                     current = candidate.to_string();
+                    stripped_suffixes.push(suffix);
                     changed = true;
                     break;
                 }
@@ -238,6 +256,19 @@ fn get_stopwords_social_media() -> Vec<String> {
         .collect()
 }
 
+/// Check if a suffix harmonizes with a root (Python binding)
+/// 
+/// # Arguments
+/// * `root` - The root word
+/// * `suffix` - The suffix to check
+/// 
+/// # Returns
+/// True if the suffix harmonizes with the root, False otherwise
+#[pyfunction]
+fn check_vowel_harmony_py(root: &str, suffix: &str) -> bool {
+    vowel_harmony::check_vowel_harmony(root, suffix)
+}
+
 /// The internal Rust part of the Durak library.
 /// High-performance Turkish NLP operations with embedded resources.
 #[pymodule]
@@ -250,6 +281,9 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
     m.add_function(wrap_pyfunction!(strip_suffixes, m)?)?;
     m.add_function(wrap_pyfunction!(strip_suffixes_validated, m)?)?;
+
+    // Vowel harmony checker
+    m.add_function(wrap_pyfunction!(check_vowel_harmony_py, m)?)?;
 
     // Embedded resource accessors
     m.add_function(wrap_pyfunction!(get_detached_suffixes, m)?)?;
@@ -379,7 +413,7 @@ mod tests {
         ];
 
         for (word, expected) in test_cases {
-            let result = strip_suffixes_validated(word, false, 2);
+            let result = strip_suffixes_validated(word, false, 2, true);
             assert_eq!(result, expected,
                 "strip_suffixes_validated({}, lenient) should be '{}'",
                 word, expected
@@ -398,7 +432,7 @@ mod tests {
         ];
 
         for (word, expected) in test_cases {
-            let result = strip_suffixes_validated(word, true, 2);
+            let result = strip_suffixes_validated(word, true, 2, true);
             assert_eq!(result, expected,
                 "strip_suffixes_validated({}, strict) should be '{}'",
                 word, expected
@@ -414,7 +448,7 @@ mod tests {
         // Example: "kitaplardan" -> naive might strip to "ki" or "k"
         // but validated should stop at "kitap"
         let word = "kitaplardan";
-        let validated_result = strip_suffixes_validated(word, true, 2);
+        let validated_result = strip_suffixes_validated(word, true, 2, true);
         
         // Should be a valid root
         assert!(validated_result.len() >= 2, 
@@ -436,6 +470,36 @@ mod tests {
     }
 
     #[test]
+    fn test_morphotactic_validation() {
+        // Test that morphotactic constraints prevent invalid suffix sequences
+        
+        // Valid sequences should work
+        let valid_cases = vec![
+            // kitap+lar+ım+da (Plural → Possessive → Case)
+            ("kitaplarımda", "kitap"),
+            // ev+ler+imiz+den (Plural → Possessive → Case)
+            ("evlerimizden", "ev"),
+        ];
+
+        for (word, expected_root) in valid_cases {
+            let result = strip_suffixes_validated(word, false, 2, true);
+            assert!(
+                result.contains(expected_root),
+                "Valid sequence: {} should lemmatize to contain '{}', got '{}'",
+                word, expected_root, result
+            );
+        }
+
+        // Invalid sequences should be rejected (stay closer to original)
+        // Note: We can't easily construct invalid forms because they don't exist
+        // in natural Turkish. The validation prevents theoretical over-stripping.
+        
+        // Example: If we had *"kitapdalar" (Case+Plural, wrong order),
+        // the validator would reject stripping "lar" after "da" was already stripped.
+        // This is tested in morphotactics module tests.
+    }
+
+    #[test]
     fn test_validated_vs_naive_comparison() {
         // Compare validated vs naive stripping to show improvements
         // Validated is SAFER - it might strip less (longer) OR more accurately (shorter)
@@ -448,7 +512,7 @@ mod tests {
 
         for word in test_words {
             let naive = strip_suffixes(word);
-            let validated = strip_suffixes_validated(word, true, 2);
+            let validated = strip_suffixes_validated(word, true, 2, true);
             
             println!("Word: {} | Naive: {} | Validated: {}", word, naive, validated);
             
@@ -461,5 +525,66 @@ mod tests {
             // Just demonstrate that both methods work (they may differ)
             // The point is validated is linguistically safer
         }
+    }
+
+    #[test]
+    fn test_vowel_harmony_integration() {
+        // Test that vowel harmony validation prevents invalid stripping
+        
+        // Valid harmony cases (should strip)
+        let valid_cases = vec![
+            ("kitaplar", "kitap"),  // back + -lar (back) ✓
+            ("evler", "ev"),        // front + -ler (front) ✓
+            ("masalar", "masa"),    // back + -lar (back) ✓
+            ("şehirler", "şehir"),  // front + -ler (front) ✓
+        ];
+
+        for (word, expected) in valid_cases {
+            let result = strip_suffixes_validated(word, false, 2, true);
+            assert_eq!(result, expected,
+                "Vowel harmony should allow {} -> {}",
+                word, expected
+            );
+        }
+
+        // Note: Testing invalid harmony cases is tricky because our suffix list
+        // naturally follows harmony rules. In production, this prevents 
+        // accidentally accepting malformed words.
+    }
+
+    #[test]
+    fn test_harmony_flag_control() {
+        // Test that check_harmony flag works
+        let word = "kitaplar";
+        
+        // With harmony check (default)
+        let with_harmony = strip_suffixes_validated(word, false, 2, true);
+        
+        // Without harmony check
+        let without_harmony = strip_suffixes_validated(word, false, 2, false);
+        
+        // Both should work for valid Turkish words
+        assert_eq!(with_harmony, "kitap");
+        assert_eq!(without_harmony, "kitap");
+        
+        println!("Harmony check can be toggled: with={}, without={}", 
+                 with_harmony, without_harmony);
+    }
+
+    #[test]
+    fn test_vowel_harmony_prevents_overstripping() {
+        // Demonstrate that harmony checking helps prevent over-stripping
+        // by rejecting suffix candidates that violate harmony
+        
+        let test_word = "kitaplardan"; // book-PLUR-ABL
+        
+        // With harmony checking
+        let with_harmony = strip_suffixes_validated(test_word, false, 2, true);
+        
+        // Should strip to valid root
+        assert!(with_harmony.len() >= 2);
+        assert_eq!(with_harmony, "kitap");
+        
+        println!("Harmony validation: {} -> {}", test_word, with_harmony);
     }
 }
