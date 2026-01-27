@@ -228,7 +228,7 @@ class Lemmatizer:
             ValueError: If metrics collection is not enabled
         """
         if not self.collect_metrics:
-            raise ValueError(
+            raise ConfigurationError(
                 "Metrics not enabled. Initialize with collect_metrics=True."
             )
         # Recompute derived metrics before returning
@@ -247,7 +247,7 @@ class Lemmatizer:
             ValueError: If metrics collection is not enabled
         """
         if not self.collect_metrics:
-            raise ValueError(
+            raise ConfigurationError(
                 "Metrics not enabled. Initialize with collect_metrics=True."
             )
         self._metrics = LemmatizerMetrics()

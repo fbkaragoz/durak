@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from durak.cleaning import normalize_case
-from durak.exceptions import StopwordError, StopwordMetadataError
+from durak.exceptions import ConfigurationError, StopwordError, StopwordMetadataError
 
 # Resource directory is now at project root: resources/tr/stopwords
 STOPWORD_DATA_DIR = (
@@ -280,11 +280,11 @@ def remove_stopwords(
         )
     else:
         if case_sensitive is not None and case_sensitive != manager.case_sensitive:
-            raise ValueError(
+            raise ConfigurationError(
                 "Provided case_sensitive does not match the supplied manager."
             )
         if base is not None or additions is not None or keep is not None:
-            raise ValueError(
+            raise ConfigurationError(
                 "Cannot provide base/additions/keep when a manager instance is "
                 "supplied."
             )
@@ -456,7 +456,7 @@ class StopwordManager:
                 json.dumps(words, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
             )
         else:
-            raise ValueError("Unsupported fmt; use 'txt' or 'json'.")
+            raise ConfigurationError("Unsupported fmt; use 'txt' or 'json'.")
 
     def to_dict(self) -> dict[str, object]:
         return {
