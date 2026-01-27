@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from durak.cleaning import normalize_case
+from durak.exceptions import StopwordError, StopwordMetadataError
 
 # Resource directory is now at project root: resources/tr/stopwords
 STOPWORD_DATA_DIR = (
@@ -22,7 +23,8 @@ __all__ = [
     "BASE_STOPWORDS",
     "DEFAULT_STOPWORD_RESOURCE",
     "STOPWORD_METADATA_PATH",
-    "StopwordMetadataError",
+    "StopwordError",
+    "StopwordMetadataError",  # Backward compatibility alias
     "StopwordManager",
     "StopwordSnapshot",
     "load_stopword_resource",
@@ -32,10 +34,6 @@ __all__ = [
     "list_stopwords",
     "remove_stopwords",
 ]
-
-
-class StopwordMetadataError(RuntimeError):
-    """Raised when stopword metadata is missing or malformed."""
 
 
 def _resolve_metadata_path(metadata_path: Path | str | None) -> Path:

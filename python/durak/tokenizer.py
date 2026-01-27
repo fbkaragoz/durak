@@ -7,6 +7,7 @@ from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 
 from durak.cleaning import normalize_case
+from durak.exceptions import TokenizationError
 
 # Regex patterns tuned for Turkish tokenisation.
 APOSTROPHE_TOKEN = r"[A-Za-zÇĞİÖŞÜçğıöşü]+(?:'[A-Za-zÇĞİÖŞÜçğıöşü]+)?"
@@ -32,10 +33,6 @@ ABBREVIATIONS = {
     "mrs.",
     "ms.",
 }
-
-
-class TokenizationError(RuntimeError):
-    """Raised when tokenization strategies encounter unexpected errors."""
 
 
 Tokenizer = Callable[[str], list[str]]
