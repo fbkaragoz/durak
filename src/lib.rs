@@ -1,7 +1,10 @@
+mod root_validator;
+
 use pyo3::prelude::*;
 use std::collections::HashMap;
 use std::sync::OnceLock;
 use regex::Regex;
+use root_validator::RootValidator;
 
 // Embedded resources using include_str! for zero-overhead loading
 // Resources are compiled directly into the binary at build time
@@ -127,6 +130,32 @@ fn strip_suffixes(word: &str) -> String {
                 current = current[..current.len() - suffix.len()].to_string();
                 changed = true;
                 break; // Restart loop after stripping one suffix
+            }
+        }
+    }
+    current
+}
+
+/// Strip suffixes with root validity checking
+/// Prevents over-stripping by validating candidate roots
+fn strip_suffixes_validated(word: &str, validator: &RootValidator) -> String {
+    let suffixes = ["lar", "ler", "nin", "nın", "den", "dan", "du", "dün", 
+                    "ta", "te", "da", "de", "ın", "in", "un", "ün"];
+    let mut current = word.to_string();
+    
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for suffix in suffixes {
+            if current.ends_with(suffix) {
+                let candidate = &current[..current.len() - suffix.len()];
+                
+                // Only strip if the resulting root is valid
+                if validator.is_valid_root(candidate) {
+                    current = candidate.to_string();
+                    changed = true;
+                    break;
+                }
             }
         }
     }
