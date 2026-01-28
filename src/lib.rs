@@ -333,7 +333,7 @@ fn get_build_info() -> HashMap<String, String> {
 /// print(resources['stopwords_base']['item_count'])  # 442
 /// ```
 #[pyfunction]
-fn get_resource_info(py: Python) -> PyResult<HashMap<String, PyObject>> {
+fn get_resource_info(py: Python) -> PyResult<HashMap<String, Py<pyo3::types::PyAny>>> {
     let metadata: ResourceMetadata = serde_json::from_str(RESOURCE_METADATA)
         .expect("Failed to parse embedded resource metadata");
     
