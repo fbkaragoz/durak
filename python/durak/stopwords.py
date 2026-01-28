@@ -386,7 +386,24 @@ class StopwordSnapshot:
 
 
 class StopwordManager:
-    """Manage stopword sets with extension and keep-list support."""
+    """Manage stopword sets with extension and keep-list support.
+
+    The StopwordManager provides flexible stopword management for text processing.
+    It supports:
+    - Base stopwords (defaults to Turkish base stopwords)
+    - Additional stopwords from custom sources
+    - Keep-list words that are never treated as stopwords
+    - Case-sensitive or case-insensitive matching
+
+    Example:
+        >>> manager = StopwordManager(additions=["special"], keep=["important"])
+        >>> manager.is_stopword("ve")  # Base stopword
+        True
+        >>> manager.is_stopword("special")  # Addition
+        True
+        >>> manager.is_stopword("important")  # In keep list
+        False
+    """
 
     def __init__(
         self,
@@ -396,6 +413,14 @@ class StopwordManager:
         keep: Iterable[str] | None = None,
         case_sensitive: bool = False,
     ) -> None:
+        """Initialize a StopwordManager with base stopwords and optional customizations.
+
+        Args:
+            base: Base stopwords to use. Defaults to BASE_STOPWORDS if not provided.
+            additions: Additional stopwords to add to the base set.
+            keep: Words that should never be treated as stopwords (overrides both base and additions).
+            case_sensitive: If True, stopword matching is case-sensitive. Defaults to False.
+        """
         self.case_sensitive = case_sensitive
         base_words = set(base) if base is not None else set(BASE_STOPWORDS)
         normalized_base = {
@@ -417,6 +442,11 @@ class StopwordManager:
         return frozenset(self._keep_words)
 
     def snapshot(self) -> StopwordSnapshot:
+        """Create an immutable snapshot of the current stopword configuration.
+
+        Returns:
+            A StopwordSnapshot containing the current stopwords, keep_words, and case_sensitive setting.
+        """
         return StopwordSnapshot(self.stopwords, self.keep_words, self.case_sensitive)
 
     def is_stopword(self, token: str | None) -> bool:
@@ -428,17 +458,38 @@ class StopwordManager:
         return normalized in self._stopwords
 
     def add(self, words: Iterable[str]) -> None:
+        """Add words to the stopword set.
+
+        Words are normalized according to the case_sensitive setting and
+        will not be added if they are in the keep_words set.
+
+        Args:
+            words: Iterable of words to add as stopwords.
+        """
         for word in words:
             normalized = _normalize(word, case_sensitive=self.case_sensitive)
             if normalized and normalized not in self._keep_words:
                 self._stopwords.add(normalized)
 
     def remove(self, words: Iterable[str]) -> None:
+        """Remove words from the stopword set.
+
+        Args:
+            words: Iterable of words to remove from the stopword set.
+        """
         for word in words:
             normalized = _normalize(word, case_sensitive=self.case_sensitive)
             self._stopwords.discard(normalized)
 
     def add_keep_words(self, words: Iterable[str]) -> None:
+        """Add words to the keep list.
+
+        Words in the keep list will never be treated as stopwords, even if
+        they appear in the base or additional stopword sets.
+
+        Args:
+            words: Iterable of words to add to the keep list.
+        """
         for word in words:
             normalized = _normalize(word, case_sensitive=self.case_sensitive)
             if normalized:
@@ -446,9 +497,23 @@ class StopwordManager:
                 self._stopwords.discard(normalized)
 
     def load_additions(self, path: Path | str) -> None:
+        """Load stopwords from a file and add them to the stopword set.
+
+        Args:
+            path: Path to a file containing newline-delimited stopwords.
+        """
         self.add(load_stopwords(path, case_sensitive=self.case_sensitive))
 
     def export(self, path: Path | str, *, fmt: str = "txt") -> None:
+        """Export the current stopword set to a file.
+
+        Args:
+            path: Destination file path.
+            fmt: Export format, either 'txt' (newline-delimited) or 'json'. Defaults to 'txt'.
+
+        Raises:
+            ValueError: If fmt is not 'txt' or 'json'.
+        """
         dest = Path(path)
         words = sorted(self.stopwords)
         if fmt == "txt":
@@ -461,6 +526,11 @@ class StopwordManager:
             raise ValueError("Unsupported fmt; use 'txt' or 'json'.")
 
     def to_dict(self) -> dict[str, object]:
+        """Convert the stopword manager state to a dictionary.
+
+        Returns:
+            A dictionary with keys 'stopwords', 'keep_words', and 'case_sensitive'.
+        """
         return {
             "stopwords": sorted(self.stopwords),
             "keep_words": sorted(self.keep_words),
@@ -475,6 +545,16 @@ class StopwordManager:
         keep: Iterable[Path | str] = (),
         case_sensitive: bool = False,
     ) -> StopwordManager:
+        """Create a StopwordManager by loading stopwords from files.
+
+        Args:
+            additions: Iterable of file paths containing additional stopwords to load.
+            keep: Iterable of file paths containing keep-words (words to never treat as stopwords).
+            case_sensitive: If True, stopword matching is case-sensitive. Defaults to False.
+
+        Returns:
+            A new StopwordManager instance with loaded stopwords.
+        """
         manager = cls(case_sensitive=case_sensitive)
         for addition_path in additions:
             manager.load_additions(addition_path)
