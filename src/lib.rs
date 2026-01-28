@@ -316,8 +316,9 @@ fn get_build_info() -> HashMap<String, String> {
         info.insert("build_date".to_string(), metadata.build_date);
     }
     
-    // Rust version - use rustversion or provide minimum required version
-    info.insert("rust_version".to_string(), env!("CARGO_PKG_RUST_VERSION").to_string());
+    // Rust version - use option_env! with fallback for robustness
+    let rust_version = option_env!("CARGO_PKG_RUST_VERSION").unwrap_or("1.70");
+    info.insert("rust_version".to_string(), rust_version.to_string());
     
     info
 }
