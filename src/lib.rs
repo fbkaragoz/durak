@@ -274,6 +274,84 @@ fn check_vowel_harmony_py(root: &str, suffix: &str) -> bool {
     vowel_harmony::check_vowel_harmony(root, suffix)
 }
 
+// ============================================================================
+// REPRODUCIBILITY & RESOURCE METADATA
+// ============================================================================
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct ResourceInfo {
+    name: String,
+    version: String,
+    source: String,
+    checksum: String,
+    item_count: usize,
+    last_updated: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ResourceMetadata {
+    version: String,
+    build_date: String,
+    resources: HashMap<String, ResourceInfo>,
+}
+
+/// Get build information for reproducibility tracking.
+/// Returns a dictionary with Durak version, build date, and Rust compiler version.
+///
+/// # Example
+/// ```python
+/// from durak import get_build_info
+/// info = get_build_info()
+/// print(info['durak_version'])  # '0.4.0'
+/// ```
+#[pyfunction]
+fn get_build_info() -> HashMap<String, String> {
+    let mut info = HashMap::new();
+    info.insert("durak_version".to_string(), env!("CARGO_PKG_VERSION").to_string());
+    info.insert("package_name".to_string(), env!("CARGO_PKG_NAME").to_string());
+    
+    // Build date would need to be set via build.rs or env vars
+    // For now, we'll use the embedded metadata's build_date
+    if let Ok(metadata) = serde_json::from_str::<ResourceMetadata>(RESOURCE_METADATA) {
+        info.insert("build_date".to_string(), metadata.build_date);
+    }
+    
+    // Rust version - use rustversion or provide minimum required version
+    info.insert("rust_version".to_string(), env!("CARGO_PKG_RUST_VERSION").to_string());
+    
+    info
+}
+
+/// Get embedded resource versions and checksums for reproducibility.
+/// Returns a dictionary mapping resource names to their metadata (version, checksum, item count, etc.)
+///
+/// # Example
+/// ```python
+/// from durak import get_resource_info
+/// resources = get_resource_info()
+/// print(resources['stopwords_base']['checksum'])  # 'a3f5b8c9d2e1f4a7...'
+/// print(resources['stopwords_base']['item_count'])  # 442
+/// ```
+#[pyfunction]
+fn get_resource_info(py: Python) -> PyResult<HashMap<String, PyObject>> {
+    let metadata: ResourceMetadata = serde_json::from_str(RESOURCE_METADATA)
+        .expect("Failed to parse embedded resource metadata");
+    
+    // Convert to Python dicts with proper types
+    let mut result = HashMap::new();
+    for (key, info) in metadata.resources {
+        let resource_dict = pyo3::types::PyDict::new(py);
+        resource_dict.set_item("name", info.name)?;
+        resource_dict.set_item("version", info.version)?;
+        resource_dict.set_item("source", info.source)?;
+        resource_dict.set_item("checksum", info.checksum)?;
+        resource_dict.set_item("item_count", info.item_count)?;  // Keep as int
+        resource_dict.set_item("last_updated", info.last_updated)?;
+        result.insert(key, resource_dict.into());
+    }
+    Ok(result)
+}
+
 /// The internal Rust part of the Durak library.
 /// High-performance Turkish NLP operations with embedded resources.
 #[pymodule]
