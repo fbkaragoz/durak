@@ -11,20 +11,20 @@ from durak.normalizer import Normalizer
 
 class TestNormalizerDefaults:
     """Test default behavior (lowercase=True, handle_turkish_i=True)"""
-    
+
     def test_default_normalization(self):
         """Default: lowercase + Turkish I handling"""
         normalizer = Normalizer()
-        
+
         # Should lowercase and handle Turkish I
         assert normalizer("İSTANBUL") == "istanbul"
         assert normalizer("ANKARA") == "ankara"
         assert normalizer("GELİYOR") == "geliyor"
-    
+
     def test_turkish_i_conversion_default(self):
         """Default: İ → i, I → ı"""
         normalizer = Normalizer()
-        
+
         # Turkish I conversion
         assert normalizer("İ") == "i"
         assert normalizer("I") == "ı"
@@ -34,43 +34,43 @@ class TestNormalizerDefaults:
 
 class TestNormalizerLowercaseFalse:
     """Test with lowercase=False"""
-    
+
     def test_preserves_case_with_turkish_i(self):
         """lowercase=False: should preserve case but handle Turkish I"""
         normalizer = Normalizer(lowercase=False, handle_turkish_i=True)
-        
+
         # Should NOT lowercase but should handle İ→i, I→ı
         result = normalizer("İSTANBUL")
         assert result == "iSTANBUL"  # İ→i, but rest stays uppercase
-        
+
         result = normalizer("IŞIK")
         assert result == "ıŞıK"  # I→ı, but Ş and K stay uppercase
-    
+
     def test_mixed_case_preserved(self):
         """lowercase=False: mixed case should be preserved"""
         normalizer = Normalizer(lowercase=False, handle_turkish_i=True)
-        
+
         result = normalizer("GeliYorum")
         assert result == "GeliYorum"  # No Turkish I, case preserved
-        
+
         result = normalizer("İstanbul")
         assert result == "istanbul"  # İ→i, rest already lowercase
 
 
 class TestNormalizerTurkishIFalse:
     """Test with handle_turkish_i=False"""
-    
+
     def test_no_turkish_i_conversion(self):
         """handle_turkish_i=False: should lowercase but NOT convert İ/I to Turkish equivalents"""
         normalizer = Normalizer(lowercase=True, handle_turkish_i=False)
-        
+
         # The key difference: dotless I (U+0049 'I')
         # Turkish: I → ı
         # Standard Unicode: I → i
         result = normalizer("ISTANBUL")  # Using dotless I
         # Standard Unicode: I → i (NOT Turkish ı)
         assert result == "istanbul"  # Standard lowercase, not "ıstanbul"
-        
+
         # Dotted İ (U+0130) lowercases to i in both cases
         result = normalizer("İSTANBUL")
         assert result == "istanbul"  # İ → i is standard Unicode behavior
@@ -78,11 +78,11 @@ class TestNormalizerTurkishIFalse:
 
 class TestNormalizerBothFalse:
     """Test with both lowercase=False and handle_turkish_i=False"""
-    
+
     def test_no_transformation(self):
         """Both False: text should be unchanged"""
         normalizer = Normalizer(lowercase=False, handle_turkish_i=False)
-        
+
         # Should return input as-is
         assert normalizer("İSTANBUL") == "İSTANBUL"
         assert normalizer("GeliYorum") == "GeliYorum"
@@ -92,7 +92,7 @@ class TestNormalizerBothFalse:
 
 class TestNormalizerEdgeCases:
     """Test edge cases"""
-    
+
     def test_empty_string(self):
         """Empty string should return empty"""
         normalizer = Normalizer()
