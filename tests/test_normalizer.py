@@ -97,19 +97,19 @@ class TestNormalizerEdgeCases:
         """Empty string should return empty"""
         normalizer = Normalizer()
         assert normalizer("") == ""
-
+    
     def test_whitespace_only(self):
         """Whitespace should be preserved"""
         normalizer = Normalizer()
         assert normalizer("   ") == "   "
-
+    
     def test_numbers_and_punctuation(self):
         """Numbers and punctuation should be unchanged"""
         normalizer = Normalizer()
         assert normalizer("123") == "123"
         assert normalizer("!@#$%") == "!@#$%"
         assert normalizer("2024 yılı!") == "2024 yılı!"
-
+    
     def test_mixed_content(self):
         """Mixed content with Turkish characters"""
         normalizer = Normalizer()
@@ -119,12 +119,12 @@ class TestNormalizerEdgeCases:
 
 class TestNormalizerRepr:
     """Test string representation"""
-
+    
     def test_repr_default(self):
         """Default normalizer repr"""
         normalizer = Normalizer()
         assert repr(normalizer) == "Normalizer(lowercase=True, handle_turkish_i=True)"
-
+    
     def test_repr_custom(self):
         """Custom config repr"""
         normalizer = Normalizer(lowercase=False, handle_turkish_i=False)
