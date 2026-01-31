@@ -2,6 +2,7 @@
 name = "_durak_core"
 version = "0.4.0"
 edition = "2021"
+rust-version = "1.70"
 
 [lib]
 name = "_durak_core"
@@ -10,6 +11,8 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.27", features = ["extension-module"] }
 regex = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 [profile.release]
 # Enable Link-Time Optimization for cross-module inlining
