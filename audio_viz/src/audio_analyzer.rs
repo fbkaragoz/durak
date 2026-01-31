@@ -141,36 +141,39 @@ impl AudioAnalyzer {
 /// Simple beat detector based on bass energy
 struct BeatDetector {
     history: Vec<f32>,
-    history_size: usize,
-    last_beat_time: f32,
-    time_counter: f32,
-    sample_rate: f32,
+    history_duration_secs: f32,  // Duration of history in seconds
+    last_beat_time: std::time::Instant,
+    start_time: std::time::Instant,
     beat_detected: bool,
     intensity: f32,
+    cooldown_duration: std::time::Duration,
 }
 
 impl BeatDetector {
-    fn new(sample_rate: usize) -> Self {
+    fn new(_sample_rate: usize) -> Self {
         Self {
             history: Vec::new(),
-            history_size: 43, // ~1 second at 43 fps
-            last_beat_time: 0.0,
-            time_counter: 0.0,
-            sample_rate: sample_rate as f32,
+            history_duration_secs: 1.0,  // Keep 1 second of history
+            last_beat_time: std::time::Instant::now(),
+            start_time: std::time::Instant::now(),
             beat_detected: false,
             intensity: 0.0,
+            cooldown_duration: std::time::Duration::from_millis(200), // 200ms cooldown
         }
     }
 
     fn process(&mut self, bass_energy: f32) {
         self.history.push(bass_energy);
-        if self.history.len() > self.history_size {
+        
+        // Maintain approximately 1 second of history
+        // Assuming process is called at roughly video frame rate (~30-60 fps)
+        let max_history_size = (self.history_duration_secs * 50.0) as usize; // Assume ~50 calls per second
+        if self.history.len() > max_history_size {
             self.history.remove(0);
         }
 
-        self.time_counter += 1.0 / 43.0; // Assume ~43 fps
-
-        if self.history.len() < self.history_size {
+        // Need minimum history for stable detection
+        if self.history.len() < 20 {
             self.beat_detected = false;
             self.intensity = 0.0;
             return;
@@ -187,11 +190,12 @@ impl BeatDetector {
         let threshold = avg + variance.sqrt() * 1.5;
 
         // Detect beat with cooldown period
-        let cooldown_passed = (self.time_counter - self.last_beat_time) > 0.2; // 200ms cooldown
+        let now = std::time::Instant::now();
+        let cooldown_passed = now.duration_since(self.last_beat_time) > self.cooldown_duration;
         
         if bass_energy > threshold && cooldown_passed {
             self.beat_detected = true;
-            self.last_beat_time = self.time_counter;
+            self.last_beat_time = now;
             self.intensity = (bass_energy - threshold) / threshold;
         } else {
             self.beat_detected = false;
