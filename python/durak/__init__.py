@@ -10,6 +10,17 @@ from .info import (
     get_build_info,
     get_resource_info,
     print_reproducibility_report,
+from .exceptions import (
+    ConfigurationError,
+    DurakError,
+    LemmatizerError,
+    NormalizerError,
+    PipelineError,
+    ResourceError,
+    RustExtensionError,
+    StopwordError,
+    StopwordMetadataError,  # Backward compatibility alias
+    TokenizationError,
 )
 from .lemmatizer import Lemmatizer
 from .normalizer import Normalizer
@@ -33,7 +44,6 @@ from .suffixes import (
 )
 from .tokenizer import (
     Tokenizer,
-    TokenizationError,
     normalize_tokens,
     split_sentences,
     tokenize,
@@ -47,11 +57,25 @@ __all__ = [
     "BASE_STOPWORDS",
     "DEFAULT_STOPWORD_RESOURCE",
     "DEFAULT_DETACHED_SUFFIXES",
+    # Modules
     "Lemmatizer",
     "Normalizer",
     "Pipeline",
     "StopwordManager",
     "StopwordSnapshot",
+    "Tokenizer",
+    # Exceptions
+    "ConfigurationError",
+    "DurakError",
+    "LemmatizerError",
+    "NormalizerError",
+    "PipelineError",
+    "ResourceError",
+    "RustExtensionError",
+    "StopwordError",
+    "StopwordMetadataError",  # Backward compatibility
+    "TokenizationError",
+    # Functions
     "attach_detached_suffixes",
     "clean_text",
     "collapse_whitespace",
@@ -64,17 +88,15 @@ __all__ = [
     "load_stopword_resources",
     "load_stopwords",
     "normalize_case",
-    "normalize_unicode",
     "normalize_tokens",
     "print_reproducibility_report",
+    "normalize_unicode",
     "process_text",
     "remove_stopwords",
     "split_sentences",
     "tokenize",
     "tokenize_text",
     "tokenize_with_offsets",
-    "Tokenizer",
-    "TokenizationError",
 ]
 
 try:
