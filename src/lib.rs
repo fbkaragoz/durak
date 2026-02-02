@@ -131,6 +131,39 @@ fn tokenize_with_offsets(text: &str) -> Vec<(String, usize, usize)> {
     results
 }
 
+/// Tokenize text and return normalized tokens with offsets pointing to original text.
+/// This is the NER-friendly version: tokens are normalized but offsets reference the raw input.
+/// 
+/// # Example
+/// ```rust
+/// let text = "İstanbul'a gittim";
+/// let tokens = tokenize_with_normalized_offsets(text);
+/// // Returns: [("istanbul'a", 0, 10), ("gittim", 11, 17)]
+/// // Note: tokens are lowercased but offsets still point to "İstanbul'a" in original
+/// ```
+#[pyfunction]
+fn tokenize_with_normalized_offsets(text: &str) -> Vec<(String, usize, usize)> {
+    let re = get_token_regex();
+    let mut results = Vec::new();
+
+    for caps in re.captures_iter(text) {
+        if let Some(mat) = caps.get(0) {
+            let token = mat.as_str();
+            let normalized_token = fast_normalize(token);
+            
+            let byte_start = mat.start();
+            let byte_end = mat.end();
+            
+            let char_start = text[..byte_start].chars().count();
+            let char_len = text[byte_start..byte_end].chars().count();
+            let char_end = char_start + char_len;
+            
+            results.push((normalized_token, char_start, char_end));
+        }
+    }
+    results
+}
+
 /// Tier 1: Exact Lookup
 #[pyfunction]
 fn lookup_lemma(word: &str) -> Option<String> {
@@ -379,6 +412,7 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Core text processing functions
     m.add_function(wrap_pyfunction!(fast_normalize, m)?)?;
     m.add_function(wrap_pyfunction!(tokenize_with_offsets, m)?)?;
+    m.add_function(wrap_pyfunction!(tokenize_with_normalized_offsets, m)?)?;
 
     // Lemmatization functions
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
