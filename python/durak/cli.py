@@ -118,7 +118,7 @@ def process(input_file: str, output: str | None, **kwargs: Any) -> None:
     help="Output format (default: txt)",
 )
 @click.option("--output", "-o", type=click.Path(), help="Output file (default: stdout)")
-def stopwords(resource: str, format: str, output: str | None) -> None:
+def stopwords(resource: str, format: str, output: str | None) -> None:  # noqa: A002
     """List stopwords from a resource.
 
     Default resource: base/turkish
