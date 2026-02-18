@@ -1,0 +1,27 @@
+[package]
+name = "audio-viz"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "audio-viz"
+path = "src/main.rs"
+
+[dependencies]
+# Audio processing
+rustfft = "6.2"
+cpal = "0.15"
+hound = "3.5"
+
+# Graphics
+wgpu = "22.1"
+winit = "0.30"
+pollster = "0.3"
+bytemuck = { version = "1.18", features = ["derive"] }
+
+# Math and utilities
+glam = "0.29"
+anyhow = "1.0"
+env_logger = "0.11"
+
+[dev-dependencies]
