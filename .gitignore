@@ -26,3 +26,6 @@ htmlcov/
 
 # temporary files
 tmp/
+
+# Cache files
+.ruff_cache/

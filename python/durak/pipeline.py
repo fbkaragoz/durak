@@ -7,6 +7,9 @@ from durak.exceptions import ConfigurationError, PipelineError
 from durak.normalizer import Normalizer
 from durak.stopwords import remove_stopwords
 from durak.tokenizer import split_sentences, tokenize
+from durak.context import ProcessingContext
+
+from typing import Callable, Protocol
 
 STEP_REGISTRY = {
     "clean": clean_text,
@@ -17,6 +20,49 @@ STEP_REGISTRY = {
     "remove_stopwords": remove_stopwords,
 }
 
+
+
+class ProcessorProtocol(Protocol):
+    """Protocol for processor callables used in the pipeline."""
+    def __call__(self, ctx: ProcessingContext) -> ProcessingContext: ...
+
+class TextPipeline:
+    """
+    Composable text processing pipeline that operates on a ProcessingContext.
+
+    :var Args: Description
+    :var steps: Description
+    :vartype steps: List
+    :var Raises: Description
+    :var ConfigurationError: Description
+    :vartype ConfigurationError: If
+    :var Examples: Description
+    :var Args: Description
+    :var text: Description
+    :vartype text: Input
+    :var Returns: Description
+    :var Raises: Description
+    :var PipelineError: Description
+    :vartype PipelineError: If
+    :var Args: Description
+    :var text: Description
+    :vartype text: Input
+    :var steps: Description
+    :vartype steps: List
+    :var Returns: Description
+    :var Examples: Description
+    """
+    def __init__(self):
+        self.steps: list[ProcessorProtocol] = []
+
+    def add_step(self, step: ProcessorProtocol) -> "TextPipeline":
+        self.steps.append(step)
+        return self
+
+    def run(self, initial_text: str) -> ProcessingContext:
+        ctx = ProcessingContext(text=initial_text)
+        for step in self.steps: ctx = step(ctx)
+        return ctx
 
 class Pipeline:
     """
@@ -107,3 +153,5 @@ def process_text(text: str, steps: list[str | callable]) -> str | list[str]:
     """
     pipeline = Pipeline(steps)
     return pipeline(text)
+
+
