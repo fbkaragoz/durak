@@ -48,7 +48,9 @@ class Normalizer:
 
         if not text:
             return ""
-
+        
+        # Pass configuration parameters to Rust core
+        return fast_normalize(text, self.lowercase, self.handle_turkish_i)
         try:
             return fast_normalize(
                 text,

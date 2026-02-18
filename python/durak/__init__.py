@@ -5,6 +5,11 @@ from __future__ import annotations
 from importlib import metadata
 
 from .cleaning import clean_text, collapse_whitespace, normalize_case, normalize_unicode
+from .info import (
+    get_bibtex_citation,
+    get_build_info,
+    get_resource_info,
+    print_reproducibility_report,
 from .exceptions import (
     ConfigurationError,
     DurakError,
@@ -44,6 +49,7 @@ from .tokenizer import (
     tokenize,
     tokenize_text,
     tokenize_with_offsets,
+    tokenize_with_normalized_offsets,
 )
 
 __all__ = [
@@ -74,6 +80,9 @@ __all__ = [
     "attach_detached_suffixes",
     "clean_text",
     "collapse_whitespace",
+    "get_bibtex_citation",
+    "get_build_info",
+    "get_resource_info",
     "is_stopword",
     "list_stopwords",
     "load_stopword_resource",
@@ -81,6 +90,7 @@ __all__ = [
     "load_stopwords",
     "normalize_case",
     "normalize_tokens",
+    "print_reproducibility_report",
     "normalize_unicode",
     "process_text",
     "process_text_with_steps",
@@ -89,6 +99,9 @@ __all__ = [
     "tokenize",
     "tokenize_text",
     "tokenize_with_offsets",
+    "tokenize_with_normalized_offsets",
+    "Tokenizer",
+    "TokenizationError",
 ]
 
 try:

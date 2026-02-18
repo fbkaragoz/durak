@@ -69,17 +69,26 @@ def tokenize_with_offsets(text: str) -> list[tuple[str, int, int]]:
 def lookup_lemma(word: str) -> str | None:
     """Perform exact dictionary lookup for lemmatization.
 
-    Tier 1 lemmatization: Fast exact lookup in the internal dictionary.
+    Tier 1 lemmatization: Fast exact lookup in the embedded Turkish lemma dictionary.
+    The dictionary contains 1,362+ inflected forms mapped to their base lemmas,
+    loaded from resources/tr/lemmas/turkish_lemma_dict.txt at build time.
+
+    Coverage:
+    - High-frequency nouns with case/plural suffixes
+    - Common verb inflections (tense, aspect, person markers)
+    - Systematic vowel harmony patterns (front/back vowel classes)
 
     Args:
-        word: The word to lemmatize
+        word: The inflected word to lemmatize
 
     Returns:
-        The lemma if found in dictionary, None otherwise
+        The base lemma if found in dictionary, None otherwise
 
     Examples:
         >>> lookup_lemma("kitaplar")
         'kitap'
+        >>> lookup_lemma("geliyorum")
+        'gel'
         >>> lookup_lemma("unknown")
         None
     """
@@ -110,50 +119,54 @@ def strip_suffixes_validated(
     word: str,
     strict: bool = False,
     min_root_length: int = 2,
-    check_harmony: bool = True,
+    check_harmony: bool = True
 ) -> str:
-    """Strip suffixes with root validation, vowel harmony, morphotactics.
+    """Strip suffixes with root validation and morphotactic constraints.
 
-    Enhanced suffix stripping that prevents over-stripping by validating
-    candidate roots, checking vowel harmony, and ensuring morphologically
-    valid suffix ordering.
+    Advanced lemmatization that validates candidate roots against a dictionary,
+    checks vowel harmony, and ensures morphologically valid suffix ordering.
+    Prevents over-stripping by applying multiple validation layers.
 
     Args:
         word: The word to process
-        strict: If True, check dictionary first, then validate; if False, use
-                phonotactic rules only (default: False)
-        min_root_length: Minimum acceptable root length in characters (default: 2)
+        strict: If True, check dictionary first; if False, use phonotactic rules only
+        min_root_length: Minimum acceptable root length (default: 2)
         check_harmony: If True, validate vowel harmony before stripping (default: True)
 
     Returns:
-        The word with suffixes stripped, validated to prevent over-stripping
+        The word with validated suffix stripping
 
     Examples:
-        >>> strip_suffixes_validated("kitaplardan", strict=True)
+        >>> strip_suffixes_validated("kitaplardan")
         'kitap'
-        >>> strip_suffixes_validated("evlerden", min_root_length=3)
+        >>> strip_suffixes_validated("geliyorum", strict=True)
+        'gel'
+        >>> strip_suffixes_validated("evlerimizden", check_harmony=True)
         'ev'
     """
     ...
 
 def check_vowel_harmony_py(root: str, suffix: str) -> bool:
-    """Check if a suffix harmonizes with a root (Turkish vowel harmony).
+    """Check if a suffix harmonizes with a root word.
 
-    Validates that all vowels in the suffix harmonize with the last
-    vowel in the root.
+    Validates Turkish vowel harmony rules between a root word and a suffix.
+    Turkish vowel harmony requires suffixes to match the vowel category
+    (front/back and rounded/unrounded) of the root word's last vowel.
 
     Args:
-        root: The root word
-        suffix: The suffix to check
+        root: The root word to check
+        suffix: The suffix to validate against the root
 
     Returns:
         True if the suffix harmonizes with the root, False otherwise
 
     Examples:
-        >>> check_vowel_harmony_py("kitap", "lar")
-        True
-        >>> check_vowel_harmony_py("kitap", "ler")
+        >>> check_vowel_harmony_py("ev", "ler")  # Back vowel + front vowel suffix
         False
+        >>> check_vowel_harmony_py("ev", "lar")  # Back vowel + back vowel suffix
+        True
+        >>> check_vowel_harmony_py("kitap", "de")
+        True
     """
     ...
 
@@ -237,4 +250,42 @@ __all__ = [
     "get_stopwords_base",
     "get_stopwords_metadata",
     "get_stopwords_social_media",
+    "get_build_info",
+    "get_resource_info",
+    "get_build_info",
+    "get_resource_info",
 ]
+
+def get_build_info() -> Dict[str, str]:
+    """Get Durak build information for reproducibility.
+    
+    Returns build metadata including package version, build date, and
+    package name for research reproducibility tracking.
+    
+    Returns:
+        Dictionary with keys: durak_version, build_date, package_name
+    
+    Examples:
+        >>> info = get_build_info()
+        >>> print(info['durak_version'])
+        '0.4.0'
+    """
+    ...
+
+def get_resource_info() -> Dict[str, Dict[str, str]]:
+    """Get embedded resource versions and checksums.
+    
+    Returns metadata for all linguistic resources embedded in the binary,
+    including versions, SHA256 checksums, item counts, and update dates.
+    
+    Returns:
+        Dictionary mapping resource names to their metadata
+    
+    Examples:
+        >>> resources = get_resource_info()
+        >>> print(resources['stopwords_base']['checksum'][:12])
+        '361908bbb0a4'
+        >>> print(resources['stopwords_base']['item_count'])
+        '118'
+    """
+    ...

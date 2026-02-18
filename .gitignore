@@ -29,3 +29,5 @@ tmp/
 
 # Cache files
 .ruff_cache/
+# uv lock file
+uv.lock

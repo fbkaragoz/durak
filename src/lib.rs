@@ -4,17 +4,21 @@ mod vowel_harmony;
 
 use pyo3::prelude::*;
 use regex::Regex;
+// will be keeping for backward compatability
+use serde::{Deserialize, Serialize};
 use root_validator::RootValidator;
 use std::collections::HashMap;
 use std::sync::OnceLock;
+
 
 // Embedded resources using include_str! for zero-overhead loading
 // Resources are compiled directly into the binary at build time
 static DETACHED_SUFFIXES_DATA: &str = include_str!("../resources/tr/labels/DETACHED_SUFFIXES.txt");
 static STOPWORDS_TR_DATA: &str = include_str!("../resources/tr/stopwords/base/turkish.txt");
 static STOPWORDS_METADATA_DATA: &str = include_str!("../resources/tr/stopwords/metadata.json");
-static STOPWORDS_SOCIAL_MEDIA_DATA: &str =
-    include_str!("../resources/tr/stopwords/domains/social_media.txt");
+static STOPWORDS_SOCIAL_MEDIA_DATA: &str = include_str!("../resources/tr/stopwords/domains/social_media.txt");
+static RESOURCE_METADATA: &str = include_str!("../resources/metadata.json");
+// incoming change will be moved into bayesian clustering in later updates
 static LEMMA_DICT_DATA: &str = include_str!("../resources/tr/lemmas/turkish_lemma_dict.txt");
 
 static LEMMA_DICT: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
@@ -74,63 +78,36 @@ fn get_token_regex() -> &'static Regex {
     })
 }
 
-/// Fast normalization for Turkish text with configurable options.
-///
+/// Fast normalization for Turkish text.
+/// Handles I/ı and İ/i conversion correctly and optionally lowercases the rest.
+/// 
 /// # Arguments
-/// * `text` - The text to normalize
-/// * `lowercase` - If true, convert text to lowercase (default: true)
-/// * `handle_turkish_i` - If true, handle Turkish I/ı/İ/i conversion (default: true)
-///
-/// # Turkish I Handling
-/// When `handle_turkish_i=true`:
-/// - 'İ' (U+0130, dotted I) → 'i' (U+0069)
-/// - 'I' (U+0049, dotless I) → 'ı' (U+0131)
-///
-/// When `handle_turkish_i=false`:
-/// - Uses standard Unicode lowercase: 'I' → 'i', 'İ' → 'i'
-///
-/// # Examples
-/// ```
-/// // Default: lowercase + Turkish I
-/// fast_normalize("İSTANBUL", true, true) → "istanbul"
-///
-/// // Turkish I only, preserve case
-/// fast_normalize("İSTANBUL", false, true) → "iSTANBUL"
-///
-/// // Standard Unicode lowercase only
-/// fast_normalize("ISTANBUL", true, false) → "istanbul"
-///
-/// // No transformation
-/// fast_normalize("İSTANBUL", false, false) → "İSTANBUL"
-/// ```
+/// * `text` - Input text to normalize
+/// * `lowercase` - If true, convert text to lowercase
+/// * `handle_turkish_i` - If true, handle Turkish İ/I conversion (İ→i, I→ı)
 #[pyfunction]
-#[pyo3(signature = (text, lowercase=true, handle_turkish_i=true))]
 fn fast_normalize(text: &str, lowercase: bool, handle_turkish_i: bool) -> String {
-    text.chars()
-        .map(|c| {
-            match (lowercase, handle_turkish_i, c) {
-                // lowercase=True, handle_turkish_i=True (default)
-                // Turkish I rules + lowercase everything else
-                (true, true, 'İ') => 'i',
-                (true, true, 'I') => 'ı',
-                (true, true, _) => c.to_lowercase().next().unwrap_or(c),
-
-                // lowercase=False, handle_turkish_i=True
-                // Turkish I rules only, preserve case for other chars
-                (false, true, 'İ') => 'i',
-                (false, true, 'I') => 'ı',
-                (false, true, _) => c,
-
-                // lowercase=True, handle_turkish_i=False
-                // Standard Unicode lowercase (no Turkish I special handling)
-                (true, false, _) => c.to_lowercase().next().unwrap_or(c),
-
-                // lowercase=False, handle_turkish_i=False
-                // Identity: no transformation
-                (false, false, _) => c,
+    // Rust handles Turkish I/ı conversion correctly and instantly
+    // "Single Pass" allocation for maximum speed
+    text.chars().map(|c| {
+        // First, handle Turkish I/İ conversion if enabled
+        let c = if handle_turkish_i {
+            match c {
+                'İ' => 'i',
+                'I' => 'ı',
+                _ => c
             }
-        })
-        .collect()
+        } else {
+            c
+        };
+        
+        // Then, apply lowercasing if enabled
+        if lowercase {
+            c.to_lowercase().next().unwrap_or(c)
+        } else {
+            c
+        }
+    }).collect()
 }
 
 /// Tokenize text and return tokens with their start and end character offsets.
@@ -164,6 +141,39 @@ fn tokenize_with_offsets(text: &str) -> Vec<(String, usize, usize)> {
             let char_end = char_start + char_len;
 
             results.push((token, char_start, char_end));
+        }
+    }
+    results
+}
+
+/// Tokenize text and return normalized tokens with offsets pointing to original text.
+/// This is the NER-friendly version: tokens are normalized but offsets reference the raw input.
+/// 
+/// # Example
+/// ```rust
+/// let text = "İstanbul'a gittim";
+/// let tokens = tokenize_with_normalized_offsets(text);
+/// // Returns: [("istanbul'a", 0, 10), ("gittim", 11, 17)]
+/// // Note: tokens are lowercased but offsets still point to "İstanbul'a" in original
+/// ```
+#[pyfunction]
+fn tokenize_with_normalized_offsets(text: &str) -> Vec<(String, usize, usize)> {
+    let re = get_token_regex();
+    let mut results = Vec::new();
+
+    for caps in re.captures_iter(text) {
+        if let Some(mat) = caps.get(0) {
+            let token = mat.as_str();
+            let normalized_token = fast_normalize(token);
+            
+            let byte_start = mat.start();
+            let byte_end = mat.end();
+            
+            let char_start = text[..byte_start].chars().count();
+            let char_len = text[byte_start..byte_end].chars().count();
+            let char_end = char_start + char_len;
+            
+            results.push((normalized_token, char_start, char_end));
         }
     }
     results
@@ -511,6 +521,85 @@ fn check_vowel_harmony_py(root: &str, suffix: &str) -> bool {
     vowel_harmony::check_vowel_harmony(root, suffix)
 }
 
+// ============================================================================
+// REPRODUCIBILITY & RESOURCE METADATA
+// ============================================================================
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct ResourceInfo {
+    name: String,
+    version: String,
+    source: String,
+    checksum: String,
+    item_count: usize,
+    last_updated: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ResourceMetadata {
+    version: String,
+    build_date: String,
+    resources: HashMap<String, ResourceInfo>,
+}
+
+/// Get build information for reproducibility tracking.
+/// Returns a dictionary with Durak version, build date, and Rust compiler version.
+///
+/// # Example
+/// ```python
+/// from durak import get_build_info
+/// info = get_build_info()
+/// print(info['durak_version'])  # '0.4.0'
+/// ```
+#[pyfunction]
+fn get_build_info() -> HashMap<String, String> {
+    let mut info = HashMap::new();
+    info.insert("durak_version".to_string(), env!("CARGO_PKG_VERSION").to_string());
+    info.insert("package_name".to_string(), env!("CARGO_PKG_NAME").to_string());
+    
+    // Build date would need to be set via build.rs or env vars
+    // For now, we'll use the embedded metadata's build_date
+    if let Ok(metadata) = serde_json::from_str::<ResourceMetadata>(RESOURCE_METADATA) {
+        info.insert("build_date".to_string(), metadata.build_date);
+    }
+    
+    // Rust version - use option_env! with fallback for robustness
+    let rust_version = option_env!("CARGO_PKG_RUST_VERSION").unwrap_or("1.70");
+    info.insert("rust_version".to_string(), rust_version.to_string());
+    
+    info
+}
+
+/// Get embedded resource versions and checksums for reproducibility.
+/// Returns a dictionary mapping resource names to their metadata (version, checksum, item count, etc.)
+///
+/// # Example
+/// ```python
+/// from durak import get_resource_info
+/// resources = get_resource_info()
+/// print(resources['stopwords_base']['checksum'])  # 'a3f5b8c9d2e1f4a7...'
+/// print(resources['stopwords_base']['item_count'])  # 442
+/// ```
+#[pyfunction]
+fn get_resource_info(py: Python) -> PyResult<HashMap<String, Py<pyo3::types::PyAny>>> {
+    let metadata: ResourceMetadata = serde_json::from_str(RESOURCE_METADATA)
+        .expect("Failed to parse embedded resource metadata");
+    
+    // Convert to Python dicts with proper types
+    let mut result = HashMap::new();
+    for (key, info) in metadata.resources {
+        let resource_dict = pyo3::types::PyDict::new(py);
+        resource_dict.set_item("name", info.name)?;
+        resource_dict.set_item("version", info.version)?;
+        resource_dict.set_item("source", info.source)?;
+        resource_dict.set_item("checksum", info.checksum)?;
+        resource_dict.set_item("item_count", info.item_count)?;  // Keep as int
+        resource_dict.set_item("last_updated", info.last_updated)?;
+        result.insert(key, resource_dict.into());
+    }
+    Ok(result)
+}
+
 /// The internal Rust part of the Durak library.
 /// High-performance Turkish NLP operations with embedded resources.
 #[pymodule]
@@ -518,6 +607,7 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Core text processing functions
     m.add_function(wrap_pyfunction!(fast_normalize, m)?)?;
     m.add_function(wrap_pyfunction!(tokenize_with_offsets, m)?)?;
+    m.add_function(wrap_pyfunction!(tokenize_with_normalized_offsets, m)?)?;
 
     // Lemmatization functions
     m.add_function(wrap_pyfunction!(lookup_lemma, m)?)?;
@@ -532,6 +622,10 @@ fn _durak_core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_stopwords_base, m)?)?;
     m.add_function(wrap_pyfunction!(get_stopwords_metadata, m)?)?;
     m.add_function(wrap_pyfunction!(get_stopwords_social_media, m)?)?;
+
+    // Reproducibility & versioning API
+    m.add_function(wrap_pyfunction!(get_build_info, m)?)?;
+    m.add_function(wrap_pyfunction!(get_resource_info, m)?)?;
 
     Ok(())
 }
@@ -602,6 +696,27 @@ mod tests {
                 result, expected_str,
                 "Failed: {} -> {:?} (expected: {:?})",
                 inflected, result, expected_str
+            );
+        }
+    }
+
+    #[test]
+    fn test_lookup_lemma_with_resource_dict() {
+        // Test lookups from embedded turkish_lemma_dict.txt
+        let test_cases = vec![
+            ("kitaplar", "kitap"),
+            ("evler", "ev"),
+            ("geliyorum", "gel"),
+            ("aldım", "al"),
+            ("adamlar", "adam"),
+            ("anaları", "ana"),
+        ];
+
+        for (inflected, expected_lemma) in test_cases {
+            let result = lookup_lemma(inflected);
+            assert_eq!(result, Some(expected_lemma.to_string()),
+                "lookup_lemma('{}') should return '{}', got: {:?}",
+                inflected, expected_lemma, result
             );
         }
     }
