@@ -50,6 +50,7 @@ def main():
         keep=["var", "git"],  # Keep these even if they're stopwords
     )
 
+    
     tokens = tokenize(clean_text(text))
     print(f"Tokens: {tokens}")
 

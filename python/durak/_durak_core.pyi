@@ -96,6 +96,55 @@ def strip_suffixes(word: str) -> str:
     """
     ...
 
+def strip_suffixes_validated(
+    word: str,
+    strict: bool = False,
+    min_root_length: int = 2,
+    check_harmony: bool = True,
+) -> str:
+    """Strip suffixes with root validity checking, vowel harmony, and morphotactic validation.
+
+    Enhanced suffix stripping that prevents over-stripping by validating candidate
+    roots, checking vowel harmony, and ensuring morphologically valid suffix ordering.
+
+    Args:
+        word: The word to process
+        strict: If True, check dictionary first, then validate; if False, use
+                phonotactic rules only (default: False)
+        min_root_length: Minimum acceptable root length in characters (default: 2)
+        check_harmony: If True, validate vowel harmony before stripping (default: True)
+
+    Returns:
+        The word with suffixes stripped, validated to prevent over-stripping
+
+    Examples:
+        >>> strip_suffixes_validated("kitaplardan", strict=True)
+        'kitap'
+        >>> strip_suffixes_validated("evlerden", min_root_length=3)
+        'ev'
+    """
+    ...
+
+def check_vowel_harmony_py(root: str, suffix: str) -> bool:
+    """Check if a suffix harmonizes with a root according to Turkish vowel harmony rules.
+
+    Validates that all vowels in the suffix harmonize with the last vowel in the root.
+
+    Args:
+        root: The root word
+        suffix: The suffix to check
+
+    Returns:
+        True if the suffix harmonizes with the root, False otherwise
+
+    Examples:
+        >>> check_vowel_harmony_py("kitap", "lar")
+        True
+        >>> check_vowel_harmony_py("kitap", "ler")
+        False
+    """
+    ...
+
 def get_detached_suffixes() -> list[str]:
     """Get embedded detached suffixes list.
 
@@ -170,6 +219,8 @@ __all__ = [
     "tokenize_with_offsets",
     "lookup_lemma",
     "strip_suffixes",
+    "strip_suffixes_validated",
+    "check_vowel_harmony_py",
     "get_detached_suffixes",
     "get_stopwords_base",
     "get_stopwords_metadata",
