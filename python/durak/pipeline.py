@@ -29,6 +29,7 @@ STEP_REGISTRY: dict[str, Callable[..., Any]] = {
     "attach_suffixes": attach_detached_suffixes,
 }
 
+# type hint
 StepType = Union[str, Callable[..., Any]]
 
 
