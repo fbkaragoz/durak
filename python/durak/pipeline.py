@@ -28,7 +28,7 @@ STEP_REGISTRY: dict[str, Callable[..., Any]] = {
     "remove_stopwords": remove_stopwords_fn,
     "attach_suffixes": attach_detached_suffixes,
 }
-# type hint
+
 StepType = Union[str, Callable[..., Any]]
 
 
