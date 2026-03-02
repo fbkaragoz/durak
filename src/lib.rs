@@ -319,11 +319,27 @@ fn strip_suffixes(word: &str) -> String {
         sorted.sort_by(|a, b| b.len().cmp(&a.len()));
 
         for suffix in sorted {
-            if current.ends_with(suffix) && current.chars().count() > suffix.chars().count() + 2 {
-                current = current[..current.len() - suffix.len()].to_string();
-                changed = true;
-                break;
+            if !current.ends_with(suffix) {
+                continue;
             }
+
+            let suffix_char_len = suffix.chars().count();
+            if current.chars().count() <= suffix_char_len + 2 {
+                continue;
+            }
+
+            let candidate = &current[..current.len() - suffix.len()];
+
+            // Guard against aggressive stripping for short suffixes.
+            // This prevents cases like "masa" -> "mas" and "kiler" -> "kil"
+            // unless the candidate is a known lemma.
+            if suffix_char_len <= 2 && !is_known_lemma(candidate) {
+                continue;
+            }
+
+            current = candidate.to_string();
+            changed = true;
+            break;
         }
     }
     current
@@ -402,16 +418,22 @@ fn strip_suffixes_validated(
         iterations += 1;
 
         // Check if current is in dictionary - if so, stop stripping
-        if dictionary.contains(&current.as_str()) {
+        if is_known_lemma(&current) {
             break;
         }
 
         for suffix in &all_single_suffixes {
             if current.ends_with(suffix) {
+                let suffix_char_len = suffix.chars().count();
                 let candidate = &current[..current.len() - suffix.len()];
 
                 // Skip if candidate would be too short
                 if candidate.chars().count() < min_root_length {
+                    continue;
+                }
+
+                // Prevent over-stripping short suffixes unless candidate is known.
+                if suffix_char_len <= 2 && !is_known_lemma(candidate) {
                     continue;
                 }
 
@@ -434,7 +456,7 @@ fn strip_suffixes_validated(
                 // Only strip if ALL conditions are met
                 if is_valid_root && has_harmony && valid_morphotactics {
                     // If candidate is in dictionary, this is our answer - stop here
-                    if dictionary.contains(&candidate) {
+                    if is_known_lemma(candidate) {
                         return candidate.to_string();
                     }
 
@@ -449,7 +471,7 @@ fn strip_suffixes_validated(
     }
 
     // Final check: if current is in dictionary, prefer it
-    if dictionary.contains(&current.as_str()) {
+    if is_known_lemma(&current) {
         return current;
     }
 
