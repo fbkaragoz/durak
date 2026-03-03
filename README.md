@@ -262,9 +262,11 @@ durak/
 ## Documentation
 
 - **[Architecture Guide](docs/ARCHITECTURE.md)**: Design principles and component architecture
+- **[Backends Guide](docs/BACKENDS.md)**: Backend control layer and capability matrix
 - **[Examples](examples/)**: Basic and advanced usage demonstrations
 - **[Benchmarks](benchmarks/)**: Performance comparison and optimization tips
 - **[API Design Docs](docs/design/)**: Detailed component specifications
+- **[Rule Ownership](docs/RULE_OWNERSHIP.md)**: Canonical linguistic/resource source map
 - **[Changelog](CHANGELOG.md)**: Version history and migration guides
 - **[Roadmap](docs/ROADMAP.md)**: Future enhancements and planned features
 
