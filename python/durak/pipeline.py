@@ -231,7 +231,11 @@ def process_text(
         tokens = [t for t in tokens if not re.fullmatch(PUNCT_TOKEN, t)]
 
     if rejoin_suffixes:
-        tokens = attach_detached_suffixes(tokens)
+        tokens = attach_detached_suffixes(
+            tokens,
+            allow_without_apostrophe=False,
+            safe_mode=True,
+        )
 
     if remove_stopwords:
         tokens = remove_stopwords_fn(tokens)
