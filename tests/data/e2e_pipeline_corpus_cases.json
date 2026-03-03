@@ -264,7 +264,7 @@
       "min_tokens": 10,
       "required_tokens": ["kanka", "bugün", "gelio", "ofisteyim"],
       "absent_in_clean": ["#", "hadi"],
-      "removed_by_stopwords": []
+      "removed_by_stopwords": ["de"]
     }
   ]
 }
